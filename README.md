@@ -33,13 +33,13 @@ Spawn is on the landing pad berm, looking at the Starships.
 
 ## Day-one landmarks
 
-- Four Starships this synodic window: pad ship now the crew hab, plus three cargo landings (two unloading)
+- Six Starships across two synodic windows: pad crew hab plus five cargo landings (three unloading). Window 2 sits west and east of the first campaign.
 - Pad Starship fitted as the first crew hab: side airlock, access stairs, ground vestibule, CREW HAB / AIRLOCK labels, occupied deck lights
 - Cargo Starships on prepared pads and near landing-prep, hatches/ramps and crates being offloaded
 - Prepared landing surfaces: graded pads, blast berms, approach markers, and a third pad still being prepped
 - Solar farm east of the pad (expanded rows plus a second field), with power lines to the Sabatier plant
 - Sabatier ISRU west: CO2 intake, ice/water feed, CH4 and O2 tanks
-- Hab cluster north along the road, hab modules being assembled from cargo kits, plus more cargo-derived pressure habs (horizontal cyls, airlocks, modules on stands being connected)
+- Hab cluster north along the road, hab modules being assembled from cargo kits, cargo-derived pressure habs, plus a second hab street (HAB 3–5) growing toward permanence
 - CO2 greenhouse / life support: Mars atmosphere intake and compressor, plant rows in compressed CO2, small O2 tank, plus a second food grow vault
 - Pad is the spaceport: methalox transfer lines from Sabatier, CH4/O2 load stand, return-propellant labels
 - Resource survey on the ice-rich northern plain: stakes, sample caches, ice/water and deposit flags, survey rover tracks
