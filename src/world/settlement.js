@@ -198,6 +198,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 8, z: -98, w: 12, d: 8 });
   landmarks.push({ id: "eclss", name: "Hab ECLSS / CO2 scrub", position: new THREE.Vector3(8, 4, -98) });
 
+  const o2buf = createO2Buffer();
+  root.add(o2buf);
+  colliders.push({ type: "box", x: -8, z: -88, w: 10, d: 8 });
+  landmarks.push({ id: "o2buf", name: "Crew O2 buffer", position: new THREE.Vector3(-8, 4, -88) });
+
   const food = createFoodWing();
   root.add(food);
   colliders.push({ type: "box", x: 38, z: -126, w: 14, d: 9 });
@@ -1348,9 +1353,11 @@ function createRoads() {
     [-78, -172, -90, -158, 3.2],
     [8, -98, 8, -78, 3.2],
     [22, -80, 8, -78, 3.2],
+    [8, -98, -8, -88, 3.2],
+    [-22, -88, -8, -88, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2329,5 +2336,22 @@ function createHabBatteries3() {
   }
   g.add(labelPlane("NIGHT", "#111111", "#f4e6c8", 2.4, 0.5, x, y + 2.7, z + 3.3));
   g.add(labelPlane("HAB STORE", "#111111", "#d6b48a", 3.0, 0.42, x, y + 2.15, z + 3.3));
+  return g;
+}
+
+function createO2Buffer() {
+  const g = new THREE.Group();
+  g.name = "o2-buffer";
+  const x = -8;
+  const z = -88;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(10.2, 0.2, 7.4), mats.concrete, x, y + 0.1, z));
+  for (let i = 0; i < 4; i++) {
+    const tx = x - 3.3 + i * 2.2;
+    g.add(mesh(new THREE.CylinderGeometry(0.85, 0.85, 3.6, 12), mats.tankO2, tx, y + 2.0, z));
+  }
+  g.add(labelPlane("O2", "#2a3340", "#e8eef4", 1.8, 0.5, x, y + 4.15, z + 3.7));
+  g.add(labelPlane("CREW", "#2a3340", "#d6b48a", 2.2, 0.42, x, y + 3.6, z + 3.7));
+  addPipeRun(g, [[-8, -88], [0, -94], [8, -98]], mats.tankO2, 0.1);
   return g;
 }
