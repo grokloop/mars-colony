@@ -253,6 +253,11 @@ export function createSettlement() {
   colliders.push({ type: "cyl", x: -58, z: -158, r: 6 });
   landmarks.push({ id: "ice", name: "Ice mining rig", position: new THREE.Vector3(-58, 8, -158) });
 
+  const mine2 = createIceMine2();
+  root.add(mine2);
+  colliders.push({ type: "cyl", x: -78, z: -172, r: 6 });
+  landmarks.push({ id: "ice2", name: "Ice mine 2", position: new THREE.Vector3(-78, 8, -172) });
+
   const survey = createSurvey();
   root.add(survey);
   colliders.push({ type: "cyl", x: -82, z: -176, r: 2.4 });
@@ -1258,9 +1263,10 @@ function createRoads() {
     [0, 32, -16, 136, 3.4],
     [135, -40, 158, -62, 3.4],
     [-68, -16, -96, -16, 3.6],
+    [-58, -158, -78, -172, 3.4],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -1966,5 +1972,28 @@ function createIsruTrain2() {
   g.add(labelPlane("O2", "#2a3340", "#e8eef4", 2.6, 0.8, x + 0.4, y + 6.0, z - 4.4));
   addPipeRun(g, [[-88, -16], [-80, -16], [-72, -16]], mats.tankCh4, 0.14);
   addPipeRun(g, [[-88, -18], [-80, -20], [-72, -18]], mats.steel, 0.12);
+  return g;
+}
+
+function createIceMine2() {
+  const g = new THREE.Group();
+  g.name = "ice-mine-2";
+  const x = -78;
+  const z = -172;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(8, 0.3, 8), mats.concrete, x, y + 0.1, z));
+  g.add(mesh(new THREE.BoxGeometry(0.28, 14, 0.28), mats.lattice, x - 2.2, y + 7, z - 2.2));
+  g.add(mesh(new THREE.BoxGeometry(0.28, 14, 0.28), mats.lattice, x + 2.2, y + 7, z - 2.2));
+  g.add(mesh(new THREE.BoxGeometry(0.28, 14, 0.28), mats.lattice, x - 2.2, y + 7, z + 2.2));
+  g.add(mesh(new THREE.BoxGeometry(0.28, 14, 0.28), mats.lattice, x + 2.2, y + 7, z + 2.2));
+  g.add(mesh(new THREE.BoxGeometry(5.2, 0.25, 5.2), mats.steelDark, x, y + 14.2, z));
+  g.add(mesh(new THREE.CylinderGeometry(0.35, 0.55, 9, 10), mats.steel, x, y + 5, z));
+  g.add(mesh(new THREE.ConeGeometry(0.7, 1.6, 8), mats.soot, x, y + 0.9, z));
+  const pile = mesh(new THREE.DodecahedronGeometry(4.0, 0), mats.ice, x + 8.2, y + 1.8, z + 1.4);
+  pile.scale.set(1.45, 0.75, 1.2);
+  g.add(pile);
+  g.add(mesh(new THREE.BoxGeometry(6.4, 0.35, 1.1), mats.steelDark, x + 3.6, y + 1.4, z, 0, 0, -0.18));
+  g.add(labelPlane("ICE 2", "#1a2830", "#d6e6ef", 2.6, 0.65, x, y + 8.4, z + 2.6));
+  addPipeRun(g, [[-74, -168], [-68, -150], [-64, -90], [-68, -26]], mats.pipe, 0.13);
   return g;
 }
