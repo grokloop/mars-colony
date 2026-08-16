@@ -24,15 +24,22 @@ function crater(x, z, cx, cz, radius, depth) {
   return bowl + rim;
 }
 
+const FLATS = [
+  [0, 0, 48, 100],
+  [52, 24, 18, 36],
+  [22, 82, 14, 28],
+];
+
 export function getHeight(x, z) {
   let h = 0;
   h += (fbm(x * 0.0038, z * 0.0038, 5) - 0.45) * 16;
   h += (fbm(x * 0.018, z * 0.018, 3) - 0.5) * 2.8;
   h += (noise2(x * 0.07, z * 0.07) - 0.5) * 0.45;
   for (const [cx, cz, r, depth] of CRATERS) h += crater(x, z, cx, cz, r, depth);
-  const dist = Math.hypot(x, z);
-  const flatten = smoothstep(100, 48, dist);
-  h = lerp(h, 0.35 + h * 0.12, flatten);
+  for (const [fx, fz, inner, outer] of FLATS) {
+    const flatten = smoothstep(outer, inner, Math.hypot(x - fx, z - fz));
+    h = lerp(h, 0.35 + h * 0.12, flatten);
+  }
   return h;
 }
 
@@ -58,6 +65,8 @@ export function roadFactor(x, z) {
     { ax: 0, az: -40, bx: -72, bz: -18 },
     { ax: 0, az: -90, bx: -55, bz: -150 },
     { ax: 18, az: -70, bx: 52, bz: -88 },
+    { ax: 12, az: 8, bx: 48, bz: 22 },
+    { ax: 16, az: 28, bx: 22, bz: 78 },
   ];
   let best = 0;
   for (const p of paths) {
@@ -133,6 +142,8 @@ export function createRocks() {
       const x = (hashJitter(placed, k, 1) - 0.5) * WORLD_SIZE * 0.92;
       const z = (hashJitter(placed, k, 2) - 0.5) * WORLD_SIZE * 0.92;
       if (Math.hypot(x, z) < 42) continue;
+      if (Math.hypot(x - 52, z - 24) < 22) continue;
+      if (Math.hypot(x - 22, z - 82) < 18) continue;
       const y = getHeight(x, z);
       const s = 0.35 + hashJitter(placed, k, 3) * (k === 2 ? 2.8 : 1.4);
       dummy.position.set(x, y + s * 0.25, z);

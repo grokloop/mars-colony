@@ -4,7 +4,7 @@ This is a living settlement. Strangers can land a new hab, a better rover, a les
 
 ## What belongs here
 
-- Structures, vehicles, and props that fit an early SpaceX-flavored Mars base
+- Structures, vehicles, and props that fit an early SpaceX cargo-then-crew Mars outpost
 - Terrain, sky, lighting, and performance improvements
 - Accessibility and control polish
 - Documentation
@@ -14,9 +14,9 @@ This is a living settlement. Strangers can land a new hab, a better rover, a les
 - Scores, quests, inventory, combat, or a win state
 - Backends, multiplayer, analytics, trackers, or secrets
 - Heavy new dependencies without a strong reason
-- Megacity sprawl that erases the first-settlement feeling
+- Alien megastructures, magic undescribed domes, fusion, or a city that erases the first-outpost feeling
 
-Invent freely around the Musk / SpaceX spine: Starship as the truck, solar, ice / ISRU, habs, greenhouses, then city.
+Stay on the Musk / SpaceX spine: Starship as the truck, uncrewed cargo first, solar power, ice mining, Sabatier ISRU (CO2 + ice → CH4 and O2), landing-surface prep, then habs. A city comes later.
 
 ## How to add a structure
 

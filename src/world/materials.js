@@ -24,6 +24,10 @@ export const mats = {
   glowPad: new THREE.MeshStandardMaterial({ color: 0xffd080, emissive: 0xffb040, emissiveIntensity: 0.7 }),
   concrete: new THREE.MeshStandardMaterial({ color: 0x8a8074, roughness: 0.92 }),
   lattice: new THREE.MeshStandardMaterial({ color: 0x9aa0a4, metalness: 0.7, roughness: 0.4 }),
+  graded: new THREE.MeshStandardMaterial({ color: 0x6a5346, roughness: 0.94, metalness: 0.04 }),
+  pipe: new THREE.MeshStandardMaterial({ color: 0x7a8a94, metalness: 0.55, roughness: 0.4 }),
+  cable: new THREE.MeshStandardMaterial({ color: 0x2a2622, metalness: 0.35, roughness: 0.55 }),
+  robot: new THREE.MeshStandardMaterial({ color: 0xc8ccd0, metalness: 0.62, roughness: 0.38 }),
 };
 
 export function makeLabelTexture(text, bg = "#1c120c", fg = "#f3e2cc") {
@@ -37,7 +41,8 @@ export function makeLabelTexture(text, bg = "#1c120c", fg = "#f3e2cc") {
   ctx.lineWidth = 6;
   ctx.strokeRect(10, 10, 492, 108);
   ctx.fillStyle = fg;
-  ctx.font = "bold 64px sans-serif";
+  const size = text.length > 12 ? 36 : text.length > 8 ? 44 : text.length > 5 ? 54 : 64;
+  ctx.font = `bold ${size}px sans-serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(text, 256, 68);

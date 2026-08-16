@@ -11,7 +11,7 @@ const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerH
 bindResize(camera, renderer);
 
 const player = new PlayerController(camera, canvas, getHeight, settlement.colliders);
-player.spawn(18.5, 23.5, 0, 2);
+player.spawn(20, 24, 8, 8);
 
 const placeEl = document.getElementById("place");
 const hintEl = document.getElementById("hint");
