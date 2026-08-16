@@ -44,28 +44,28 @@ export function createSettlement() {
   root.add(createLandingPad(0, 0, { finished: true }));
   const ship = createStarship(0, 0, { name: "starship", crewHab: true });
   root.add(ship);
-  colliders.push({ type: "cyl", x: 0, z: 0, r: 6.2 });
-  colliders.push({ type: "box", x: 0, z: 12.8, w: 3.6, d: 13.6 });
+  colliders.push({ type: "cyl", x: 0, z: 0, r: 7.4 });
+  colliders.push({ type: "box", x: 0, z: 13.8, w: 3.2, d: 11.0 });
   landmarks.push({ id: "starship", name: "Crew hab Starship", position: new THREE.Vector3(0, 18, 0) });
   landmarks.push({ id: "eva", name: "EVA / airlock", position: new THREE.Vector3(2, 3, 12) });
 
   root.add(createLandingPad(52, 24, { finished: false }));
   const cargo = createStarship(52, 24, { name: "cargo-starship", cargoOpen: true });
   root.add(cargo);
-  colliders.push({ type: "cyl", x: 52, z: 24, r: 6.2 });
+  colliders.push({ type: "cyl", x: 52, z: 24, r: 7.4 });
   landmarks.push({ id: "cargo", name: "Cargo Starship", position: new THREE.Vector3(52, 18, 24) });
 
   root.add(createLandingPad(36, 72, { finished: false }));
   const cargo3 = createStarship(36, 72, { name: "cargo-3", cargoOpen: true });
   root.add(cargo3);
-  colliders.push({ type: "cyl", x: 36, z: 72, r: 6.2 });
+  colliders.push({ type: "cyl", x: 36, z: 72, r: 7.4 });
   landmarks.push({ id: "cargo3", name: "Cargo Starship 3", position: new THREE.Vector3(36, 18, 72) });
   root.add(createWindowOffload(24, 70));
 
   root.add(createLandingPad(-24, 44, { finished: false }));
   const cargo4 = createStarship(-24, 44, { name: "cargo-4" });
   root.add(cargo4);
-  colliders.push({ type: "cyl", x: -24, z: 44, r: 6.2 });
+  colliders.push({ type: "cyl", x: -24, z: 44, r: 7.4 });
   landmarks.push({ id: "cargo4", name: "Cargo Starship 4", position: new THREE.Vector3(-24, 18, 44) });
 
   root.add(createCrates());
@@ -189,14 +189,7 @@ export function createSettlement() {
   root.add(createOptimus(-28, -104, 0.3));
   root.add(createEvaPresence());
 
-  for (const [ox, oz] of [[42, 22], [39, 26], [26, 78], [26, 68], [22, 72], [-80, -174], [-34, -92], [-28, -104]]) {
-    colliders.push({ type: "cyl", x: ox, z: oz, r: 0.55 });
-  }
-  colliders.push({ type: "box", x: 54, z: -18, w: 3, d: 2.2 });
-  colliders.push({ type: "box", x: 96, z: -72, w: 3, d: 2.2 });
-  colliders.push({ type: "box", x: 14, z: 22, w: 2.2, d: 1.4 });
-  colliders.push({ type: "box", x: 18, z: 26, w: 1.6, d: 1.2 });
-  colliders.push({ type: "box", x: 20, z: 36, w: 1.8, d: 1.2 });
+  addPropColliders(colliders);
 
   root.add(createRoads());
   root.add(createLights());
@@ -1496,4 +1489,54 @@ function createBatteries() {
   g.add(labelPlane("NIGHT", "#111111", "#f4e6c8", 2.2, 0.5, hx, hy + 2.55, hz + 2.7));
   g.add(labelPlane("HABS", "#111111", "#d6b48a", 1.8, 0.42, hx, hy + 2.05, hz + 2.7));
   return g;
+}
+
+function addPropColliders(colliders) {
+  const crate = (x, z, s = 1) => colliders.push({ type: "box", x, z, w: 1.9 * s, d: 1.9 * s });
+  const cyl = (x, z, r) => colliders.push({ type: "cyl", x, z, r });
+  const box = (x, z, w, d) => colliders.push({ type: "box", x, z, w, d });
+
+  for (const [x, z] of [[10, 8], [12.2, 8.4], [10.4, 10.6], [13.5, 6.2], [-12, 9], [-14, 7.2], [8.5, -11], [6.4, -12.5]]) crate(x, z);
+  for (const [x, z] of [[40, 22], [38.2, 24.1], [41.4, 26.2], [36.5, 21.4], [37.8, 27.6], [34.8, 24.8], [39.2, 19.6], [35.4, 19.2]]) crate(x, z);
+  crate(38.6, 22.8, 1.15);
+  crate(33.2, 20.4, 1.2);
+  crate(31.4, 22.1, 1.05);
+  const ox = 24, oz = 70;
+  for (const [x, z] of [[ox, oz], [ox - 1.8, oz + 2.1], [ox + 1.6, oz + 2.4], [ox - 2.4, oz - 1.2], [ox + 0.8, oz - 2.2], [ox - 3.2, oz + 0.6]]) crate(x, z);
+  crate(ox - 4.2, oz + 1.4, 1.12);
+  crate(ox - 5.4, oz - 0.6, 1.05);
+  crate(5.4, 13.2, 0.85);
+
+  for (const [x, z] of [[16, 14], [8, -62], [30, 74], [-94, -182]]) cyl(x, z, 2.4);
+  for (const [x, z] of [[-55, -146], [-61, -118], [-66, -78], [-68, -38], [-70, -62], [-50, -24], [-18, -14], [22, 12]]) cyl(x, z, 3.4);
+
+  for (const [x, z] of [[42, 22], [39, 26], [26, 78], [26, 68], [22, 72], [-80, -174], [-34, -92], [-28, -104]]) cyl(x, z, 0.55);
+
+  for (const [x, z] of [[2.4, 12.2], [-2.2, 11.5], [3.8, 15.6], [0.6, 18.2]]) cyl(x, z, 0.55);
+  box(4.3, 14.8, 1.4, 1.0);
+  box(-3.9, 9.1, 1.1, 0.8);
+  box(5.1, 16.4, 1.2, 0.8);
+
+  for (let j = 0; j < 8; j++) box(82.3, -22 - j * 6.2, 50, 2.6);
+  box(54, -18, 3, 2.2);
+  for (let j = 0; j < 4; j++) box(111.5, -74 - j * 6.2, 30, 2.6);
+  box(96, -72, 3, 2.2);
+
+  box(14, 22, 2.4, 1.6);
+  box(18, 26, 1.8, 1.3);
+  box(20, 36, 2.0, 1.3);
+  box(17, -17, 2.4, 1.6);
+
+  const stakeGrid = [
+    [-108, -210], [-98, -210], [-88, -210], [-78, -210], [-68, -210],
+    [-108, -198], [-98, -198], [-88, -198], [-78, -198], [-68, -198],
+    [-108, -186], [-98, -186], [-88, -186], [-78, -186], [-68, -186],
+    [-108, -174], [-98, -174], [-88, -174], [-78, -174], [-68, -174],
+  ];
+  for (const [x, z] of stakeGrid) cyl(x, z, 0.4);
+  cyl(-96, -198, 0.7);
+  cyl(-72, -204, 0.7);
+  cyl(-104, -176, 0.7);
+  for (const [x, z] of [[-90, -184], [-88.4, -182.6], [-91.2, -181.8], [-86.6, -185.2]]) box(x, z, 1.2, 1.2);
+  crate(-84.5, -180.4, 0.85);
 }

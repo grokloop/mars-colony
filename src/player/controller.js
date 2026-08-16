@@ -47,6 +47,22 @@ export class PlayerController {
 
   update(dt) {
     this.applyLook();
+    if (!this.locked) {
+      this.velocity.x = 0;
+      this.velocity.z = 0;
+      this.velocity.y -= 18 * dt;
+      const p = this.camera.position;
+      p.y += this.velocity.y * dt;
+      const ground = this.getHeight(p.x, p.z) + this.eye;
+      if (p.y <= ground) {
+        p.y = ground;
+        this.velocity.y = 0;
+        this.onGround = true;
+      } else {
+        this.onGround = false;
+      }
+      return;
+    }
     const speed = this.keys.has("ShiftLeft") || this.keys.has("ShiftRight") ? 11.5 : 5.2;
     const forward = new THREE.Vector3(-Math.sin(this.yaw), 0, -Math.cos(this.yaw));
     const right = new THREE.Vector3(Math.cos(this.yaw), 0, -Math.sin(this.yaw));
@@ -82,25 +98,30 @@ export class PlayerController {
   }
 
   resolveColliders(p) {
+    const boxes = [];
+    const cyls = [];
     for (const c of this.colliders) {
-      if (c.type === "cyl") {
-        const dx = p.x - c.x;
-        const dz = p.z - c.z;
-        const d = Math.hypot(dx, dz);
-        if (d < c.r && d > 0.0001) {
-          const k = c.r / d;
-          p.x = c.x + dx * k;
-          p.z = c.z + dz * k;
-        }
-      } else if (c.type === "box") {
-        const hx = c.w * 0.5;
-        const hz = c.d * 0.5;
-        if (Math.abs(p.x - c.x) < hx && Math.abs(p.z - c.z) < hz) {
-          const ox = hx - Math.abs(p.x - c.x);
-          const oz = hz - Math.abs(p.z - c.z);
-          if (ox < oz) p.x += Math.sign(p.x - c.x) * ox;
-          else p.z += Math.sign(p.z - c.z) * oz;
-        }
+      if (c.type === "cyl") cyls.push(c);
+      else boxes.push(c);
+    }
+    for (const c of boxes) {
+      const hx = c.w * 0.5;
+      const hz = c.d * 0.5;
+      if (Math.abs(p.x - c.x) < hx && Math.abs(p.z - c.z) < hz) {
+        const ox = hx - Math.abs(p.x - c.x);
+        const oz = hz - Math.abs(p.z - c.z);
+        if (ox < oz) p.x += Math.sign(p.x - c.x) * ox;
+        else p.z += Math.sign(p.z - c.z) * oz;
+      }
+    }
+    for (const c of cyls) {
+      const dx = p.x - c.x;
+      const dz = p.z - c.z;
+      const d = Math.hypot(dx, dz);
+      if (d < c.r && d > 0.0001) {
+        const k = c.r / d;
+        p.x = c.x + dx * k;
+        p.z = c.z + dz * k;
       }
     }
   }
