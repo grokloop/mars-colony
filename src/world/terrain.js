@@ -414,6 +414,7 @@ const FLATS = [
   [-130, -100, 10, 10],
   [-142, -100, 10, 10],
   [-10, -230, 10, 10],
+  [-10, -244, 10, 10],
   [138, -1518, 10, 10],
   [138, -1532, 10, 10],
   [138, -1546, 10, 10],
@@ -863,6 +864,7 @@ export function roadFactor(x, z) {
     { ax: -118, az: -100, bx: -130, bz: -100 },
     { ax: -130, az: -100, bx: -142, bz: -100 },
     { ax: -10, az: -216, bx: -10, bz: -230 },
+    { ax: -10, az: -230, bx: -10, bz: -244 },
     { ax: 138, az: -1504, bx: 138, bz: -1518 },
     { ax: 138, az: -1518, bx: 138, bz: -1532 },
     { ax: 138, az: -1532, bx: 138, bz: -1546 },
@@ -1335,6 +1337,7 @@ export function createRocks() {
       if (Math.hypot(x + 130, z + 100) < 14) continue;
       if (Math.hypot(x + 142, z + 100) < 14) continue;
       if (Math.hypot(x + 10, z + 230) < 14) continue;
+      if (Math.hypot(x + 10, z + 244) < 14) continue;
       if (Math.hypot(x - 138, z + 1518) < 14) continue;
       if (Math.hypot(x - 138, z + 1532) < 14) continue;
       if (Math.hypot(x - 138, z + 1546) < 14) continue;
