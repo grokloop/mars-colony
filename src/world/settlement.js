@@ -139,9 +139,9 @@ export function createSettlement() {
 
   const hood = createNeighborhood();
   root.add(hood);
-  colliders.push({ type: "box", x: -33, z: -120, w: 28, d: 6 });
-  colliders.push({ type: "box", x: -6, z: -120, w: 5, d: 24 });
-  colliders.push({ type: "box", x: -4, z: -58, w: 5, d: 70 });
+  addTubeRails(colliders, -33, -120, "x", 28);
+  addTubeRails(colliders, -6, -120, "z", 24);
+  addTubeRails(colliders, -4, -58, "z", 70);
   colliders.push({ type: "cyl", x: 2, z: -22, r: 1.6 });
   landmarks.push({ id: "corridors", name: "Pressurized neighborhood", position: new THREE.Vector3(-20, 4, -120) });
 
@@ -149,7 +149,7 @@ export function createSettlement() {
   root.add(yard);
   colliders.push({ type: "box", x: -36, z: -74, w: 18, d: 14 });
   colliders.push({ type: "box", x: -40, z: -76, w: 12, d: 8 });
-  colliders.push({ type: "box", x: -36, z: -87, w: 8, d: 22 });
+  addTubeRails(colliders, -36, -87, "z", 22);
   landmarks.push({ id: "yard", name: "Construction yard", position: new THREE.Vector3(-36, 5, -74) });
   landmarks.push({ id: "hab6", name: "Hab 6", position: new THREE.Vector3(-40, 5, -76) });
 
@@ -161,7 +161,7 @@ export function createSettlement() {
   const commons = createCommons();
   root.add(commons);
   colliders.push({ type: "box", x: 10, z: -124, w: 14, d: 10 });
-  colliders.push({ type: "box", x: 2, z: -128, w: 10, d: 5 });
+  addTubeRails(colliders, 2, -128, "x", 10);
   landmarks.push({ id: "commons", name: "Crew commons / mess", position: new THREE.Vector3(10, 5, -124) });
 
   const gh = createGreenhouse();
@@ -1668,6 +1668,18 @@ function createHabStreet() {
   return g;
 }
 
+
+function addTubeRails(colliders, x, z, along, len) {
+  const t = 0.4;
+  const half = 1.35;
+  if (along === "x") {
+    colliders.push({ type: "box", x, z: z - half, w: len, d: t });
+    colliders.push({ type: "box", x, z: z + half, w: len, d: t });
+  } else {
+    colliders.push({ type: "box", x: x - half, z, w: t, d: len });
+    colliders.push({ type: "box", x: x + half, z, w: t, d: len });
+  }
+}
 function addCrewHabHull(colliders) {
   const box = (x, z, w, d) => colliders.push({ type: "box", x, z, w, d });
   box(-6.2, 0, 5.2, 14.8);
