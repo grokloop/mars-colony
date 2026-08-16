@@ -290,6 +290,7 @@ const FLATS = [
   [138, -398, 10, 10],
   [64, -122, 10, 10],
   [-22, -146, 10, 10],
+  [138, -412, 10, 10],
 ];
 
 export function getHeight(x, z) {
@@ -603,6 +604,7 @@ export function roadFactor(x, z) {
     { ax: 138, az: -384, bx: 138, bz: -398 },
     { ax: 50, az: -122, bx: 64, bz: -122 },
     { ax: -34, az: -146, bx: -22, bz: -146 },
+    { ax: 138, az: -398, bx: 138, bz: -412 },
   ];
   let best = 0;
   for (const p of paths) {
@@ -939,6 +941,7 @@ export function createRocks() {
       if (Math.hypot(x - 138, z + 398) < 14) continue;
       if (Math.hypot(x - 64, z + 122) < 14) continue;
       if (Math.hypot(x + 22, z + 146) < 14) continue;
+      if (Math.hypot(x - 138, z + 412) < 14) continue;
       const y = getHeight(x, z);
       const s = 0.35 + hashJitter(placed, k, 3) * (k === 2 ? 2.8 : 1.4);
       dummy.position.set(x, y + s * 0.25, z);
