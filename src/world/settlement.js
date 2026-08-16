@@ -87,7 +87,9 @@ export function createSettlement() {
   landmarks.push({ id: "prep", name: "Landing prep", position: new THREE.Vector3(22, 4, 82) });
 
   root.add(createNextWindowPad());
+  colliders.push({ type: "box", x: -38, z: 148, w: 10, d: 8 });
   landmarks.push({ id: "pad2", name: "Next-window pad", position: new THREE.Vector3(-16, 6, 136) });
+  landmarks.push({ id: "sinter", name: "Pad sinter rig", position: new THREE.Vector3(-38, 4, 148) });
 
   const solar = createSolarFarm();
   root.add(solar);
@@ -1946,8 +1948,31 @@ function createNextWindowPad() {
   g.add(labelPlane("26 MONTHS", "#1a100c", "#d6b48a", 3.6, 0.55, x + 22, y + 2.75, z + 4, -0.55));
   g.add(mesh(new THREE.BoxGeometry(0.12, 3.4, 0.12), mats.steelDark, x + 22, y + 1.7, z + 4));
   g.add(labelPlane("PAD 2", "#1a100c", "#f0c089", 2.4, 0.55, x, y + 0.55, z + 22.4));
+  g.add(mesh(new THREE.CylinderGeometry(18.4, 18.4, 0.12, 40), mats.concrete, x, y + 0.38, z));
+  g.add(mesh(new THREE.RingGeometry(9.2, 17.6, 36), mats.soot, x, y + 0.46, z, -Math.PI / 2, 0, 0));
+  g.add(labelPlane("SINTERED", "#1a100c", "#f0c089", 3.6, 0.55, x + 22, y + 1.95, z + 4, -0.55));
+  g.add(createSinterRig(-38, 148));
   addCrate(g, -32, 124, 0.2, 0.9);
   addCrate(g, -30.6, 126.4, -0.25, 0.95);
+  addCrate(g, -40, 144, 0.1, 0.85);
+  addCrate(g, -41.4, 146.2, -0.3, 0.8);
+  return g;
+}
+
+function createSinterRig(x, z) {
+  const g = new THREE.Group();
+  g.name = "sinter-rig";
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(8.4, 0.22, 6.2), mats.concrete, x, y + 0.1, z));
+  g.add(mesh(new THREE.BoxGeometry(5.6, 2.4, 3.2), mats.habDark, x, y + 1.4, z));
+  g.add(mesh(new THREE.BoxGeometry(1.6, 3.6, 1.6), mats.steelDark, x + 2.8, y + 2.0, z - 0.4));
+  g.add(mesh(new THREE.CylinderGeometry(0.18, 0.18, 4.8, 8), mats.steel, x + 2.8, y + 5.2, z - 0.4));
+  g.add(mesh(new THREE.BoxGeometry(2.4, 0.18, 1.1), mats.glowWarm, x + 2.8, y + 7.6, z - 0.4));
+  g.add(labelPlane("SINTER", "#1a100c", "#f0c089", 3.2, 0.6, x, y + 2.9, z + 1.85));
+  g.add(labelPlane("REGOLITH", "#1a100c", "#d6b48a", 3.4, 0.45, x, y + 2.3, z + 1.85));
+  for (let i = 0; i < 4; i++) {
+    g.add(mesh(new THREE.BoxGeometry(1.4, 0.28, 0.9), mats.concrete, x - 2.4, y + 0.35 + i * 0.32, z + 2.6));
+  }
   return g;
 }
 
