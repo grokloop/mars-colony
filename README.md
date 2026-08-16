@@ -40,13 +40,16 @@ Spawn is on the landing pad berm, looking at the Starships.
 - Solar farm east of the pad (expanded rows plus a second field), with power lines to the Sabatier plant
 - Sabatier ISRU west: CO2 intake, ice/water feed, CH4 and O2 tanks
 - Hab cluster north along the road, hab modules being assembled from cargo kits, plus more cargo-derived pressure habs (horizontal cyls, airlocks, modules on stands being connected)
-- CO2 greenhouse / life support: Mars atmosphere intake and compressor, plant rows in compressed CO2, small O2 tank
+- CO2 greenhouse / life support: Mars atmosphere intake and compressor, plant rows in compressed CO2, small O2 tank, plus a second food grow vault
 - Pad is the spaceport: methalox transfer lines from Sabatier, CH4/O2 load stand, return-propellant labels
 - Resource survey on the ice-rich northern plain: stakes, sample caches, ice/water and deposit flags, survey rover tracks
 - Workshop hangar (early cargo / construction)
 - Comms tower plus a large Earth-pointing dish (DSN / Starship-era link; light-time delay, not real-time)
 - Ice-mining rig with a water-ice pile and a feed line to Sabatier
 - Ice/cargo haul loop: loaded trailers on the road from the mine to a transfer yard, Sabatier ISRU, and the pad
+- Second grow vault for food: more plant rows in compressed CO2, FOOD / GROW FROM CO2
+- Visible water loop: ice melt and filter on the mine road, potable tanks at the habs, pipes ice → ISRU and ice → crew
+- Battery / night store by the solar farm and a smaller pack at the habs so the plant and crew run after dark
 - Small EVA/crew presence at the pad airlock: suited figures, tool cart, suitport
 - Optimus-class robots on cargo offload, landing prep, survey, and hab assembly
 - Graded/packed-regolith roads and plank paths linking pad, cargo, ISRU, habs, greenhouse, survey, and both solar fields

@@ -117,6 +117,24 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 32, z: -112, w: 8, d: 6 });
   landmarks.push({ id: "greenhouse", name: "CO2 life support", position: new THREE.Vector3(22, 4, -112) });
 
+  const food = createFoodWing();
+  root.add(food);
+  colliders.push({ type: "box", x: 38, z: -126, w: 14, d: 9 });
+  landmarks.push({ id: "food", name: "Food / grow vault", position: new THREE.Vector3(38, 4, -126) });
+
+  const water = createWaterLoop();
+  root.add(water);
+  colliders.push({ type: "box", x: -60, z: -148, w: 8, d: 6 });
+  colliders.push({ type: "box", x: -64, z: -118, w: 8, d: 6 });
+  colliders.push({ type: "box", x: -18, z: -88, w: 10, d: 8 });
+  landmarks.push({ id: "water", name: "Water loop", position: new THREE.Vector3(-18, 4, -88) });
+
+  const batt = createBatteries();
+  root.add(batt);
+  colliders.push({ type: "box", x: 68, z: -10, w: 16, d: 8 });
+  colliders.push({ type: "box", x: -22, z: -88, w: 8, d: 6 });
+  landmarks.push({ id: "battery", name: "Night power store", position: new THREE.Vector3(68, 4, -10) });
+
   const methalox = createMethaloxStand();
   root.add(methalox);
   colliders.push({ type: "box", x: -15, z: -8, w: 10, d: 7 });
@@ -170,6 +188,15 @@ export function createSettlement() {
   root.add(createOptimus(-34, -92, -1.2));
   root.add(createOptimus(-28, -104, 0.3));
   root.add(createEvaPresence());
+
+  for (const [ox, oz] of [[42, 22], [39, 26], [26, 78], [26, 68], [22, 72], [-80, -174], [-34, -92], [-28, -104]]) {
+    colliders.push({ type: "cyl", x: ox, z: oz, r: 0.55 });
+  }
+  colliders.push({ type: "box", x: 54, z: -18, w: 3, d: 2.2 });
+  colliders.push({ type: "box", x: 96, z: -72, w: 3, d: 2.2 });
+  colliders.push({ type: "box", x: 14, z: 22, w: 2.2, d: 1.4 });
+  colliders.push({ type: "box", x: 18, z: 26, w: 1.6, d: 1.2 });
+  colliders.push({ type: "box", x: 20, z: 36, w: 1.8, d: 1.2 });
 
   root.add(createRoads());
   root.add(createLights());
@@ -1128,9 +1155,14 @@ function createRoads() {
     [-64, -90, -68, -16, 4.2],
     [-18, -138, -32, -148, 3.2],
     [-32, -98, -46, -100, 3.4],
+    [22, -112, 38, -126, 3.4],
+    [-58, -158, -60, -148, 3.2],
+    [-64, -118, -18, -88, 3.6],
+    [84, -42, 68, -10, 3.4],
+    [-6, -108, -18, -88, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -1141,6 +1173,7 @@ function createRoads() {
     [28, 50], [32, 62], [-12, 30], [-20, 40],
     [-60, -130], [-66, -70], [-66, -40], [-26, -144],
     [-40, -100], [-52, -108], [3.4, 12], [-3.2, 12],
+    [30, -118], [38, -126], [-60, -148], [-64, -118], [-18, -88], [68, -10],
   ];
   for (const [sx, sz] of stakes) addStake(g, sx, sz, mats.flagDeposit);
   return g;
@@ -1155,6 +1188,7 @@ function createLights() {
     [0, -40], [22, -112], [32, -112], [70, -40], [84, -44],
     [36, 60], [-24, 32], [-64, -90], [-40, -148], [-32, -156],
     [4, 14], [-46, -108], [-46, -92], [-58, -102],
+    [38, -126], [-18, -88], [68, -10], [-60, -148], [-64, -118], [-22, -88],
   ];
   for (const [x, z] of poles) {
     const y = getHeight(x, z);
@@ -1349,3 +1383,117 @@ function createHaulLoop() {
   return g;
 }
 
+function addPipe(g, ax, az, bx, bz, n = 8, lift = 1.15, r = 0.16) {
+  const pts = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    const x = ax + (bx - ax) * t;
+    const z = az + (bz - az) * t;
+    const y = getHeight(x, z) + lift;
+    pts.push(new THREE.Vector3(x, y, z));
+    if (i % 2 === 0) {
+      g.add(mesh(new THREE.BoxGeometry(0.16, lift, 0.16), mats.steelDark, x, getHeight(x, z) + lift * 0.5, z));
+    }
+  }
+  const tube = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), n * 2, r, 6, false), mats.pipe);
+  tube.castShadow = false;
+  g.add(tube);
+}
+
+function createFoodWing() {
+  const g = new THREE.Group();
+  g.name = "food";
+  const x = 38;
+  const z = -126;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(13.2, 0.25, 7.6), mats.concrete, x, y + 0.1, z));
+  const vault = new THREE.Mesh(new THREE.CylinderGeometry(3.55, 3.55, 12.4, 18, 1, false, 0, Math.PI), mats.glass);
+  vault.rotation.z = Math.PI / 2;
+  vault.position.set(x, y + 3.55, z);
+  vault.castShadow = false;
+  g.add(vault);
+  g.add(mesh(new THREE.BoxGeometry(12.2, 0.1, 7.2), mats.solarFrame, x, y + 3.6, z));
+  for (let i = -2; i <= 2; i++) {
+    g.add(mesh(new THREE.BoxGeometry(1.85, 0.24, 5.6), mats.soil, x + i * 2.1, y + 0.34, z));
+    for (let j = -2; j <= 2; j++) {
+      const leaf = j % 2 === 0 ? mats.plant : mats.plantLeaf;
+      g.add(mesh(new THREE.BoxGeometry(1.25, 0.58, 0.72), leaf, x + i * 2.1, y + 0.78, z + j * 0.95));
+    }
+    g.add(mesh(new THREE.BoxGeometry(1.5, 0.05, 5.2), mats.glowWarm, x + i * 2.1, y + 3.15, z));
+  }
+  g.add(mesh(new THREE.BoxGeometry(1.1, 1.8, 0.14), mats.habDark, x - 6.2, y + 1.1, z));
+  g.add(mesh(new THREE.CylinderGeometry(0.14, 0.14, 12, 8), mats.pipe, 30, getHeight(30, -119) + 1.2, -119, 0, 0, Math.PI / 2));
+  g.add(labelPlane("FOOD", "#1a100c", "#f0c089", 2.8, 0.7, x, y + 5.05, z + 0.15));
+  g.add(labelPlane("GROW FROM CO2", "#1a100c", "#d6b48a", 3.6, 0.5, x, y + 4.35, z + 0.15));
+  addCrate(g, 45, -122, 0.2, 0.9);
+  addCrate(g, 46.2, -124.4, -0.3, 0.85);
+  return g;
+}
+
+function createWaterLoop() {
+  const g = new THREE.Group();
+  g.name = "water-loop";
+
+  const mx = -60;
+  const mz = -148;
+  const my = getHeight(mx, mz);
+  g.add(mesh(new THREE.BoxGeometry(7.2, 0.22, 5.4), mats.concrete, mx, my + 0.1, mz));
+  g.add(mesh(new THREE.BoxGeometry(3.4, 2.1, 2.4), mats.habDark, mx - 1.1, my + 1.2, mz));
+  g.add(mesh(new THREE.CylinderGeometry(1.15, 1.15, 2.6, 12), mats.steel, mx + 1.8, my + 1.5, mz + 0.4));
+  g.add(mesh(new THREE.BoxGeometry(1.6, 0.7, 1.2), mats.ice, mx + 1.8, my + 3.05, mz + 0.4));
+  g.add(labelPlane("MELT", "#1a2830", "#d6e6ef", 2.2, 0.55, mx - 1.1, my + 1.7, mz + 1.35));
+  g.add(labelPlane("ICE", "#1a2830", "#d6e6ef", 1.5, 0.42, mx + 1.8, my + 1.7, mz + 1.7));
+
+  const fx = -64;
+  const fz = -118;
+  const fy = getHeight(fx, fz);
+  g.add(mesh(new THREE.BoxGeometry(7.4, 0.22, 5.2), mats.concrete, fx, fy + 0.1, fz));
+  g.add(mesh(new THREE.BoxGeometry(3.6, 2.2, 2.6), mats.steelDark, fx, fy + 1.25, fz));
+  g.add(mesh(new THREE.CylinderGeometry(0.55, 0.55, 2.8, 10), mats.pipe, fx + 2.2, fy + 1.6, fz - 0.6));
+  g.add(labelPlane("FILTER", "#1a2830", "#d6e6ef", 2.5, 0.55, fx, fy + 1.85, fz + 1.45));
+
+  const px = -18;
+  const pz = -88;
+  const py = getHeight(px, pz);
+  g.add(mesh(new THREE.BoxGeometry(9.2, 0.22, 7.2), mats.concrete, px, py + 0.1, pz));
+  g.add(mesh(new THREE.CylinderGeometry(2.15, 2.15, 5.6, 16), mats.tankO2, px - 1.6, py + 3.0, pz));
+  g.add(mesh(new THREE.CylinderGeometry(1.55, 1.55, 4.2, 14), mats.pipe, px + 2.4, py + 2.3, pz + 1.1));
+  g.add(labelPlane("POTABLE", "#1a2830", "#d6e6ef", 3.2, 0.7, px - 1.6, py + 3.2, pz + 2.35));
+  g.add(labelPlane("H2O", "#1a2830", "#d6e6ef", 1.8, 0.5, px + 2.4, py + 2.5, pz + 2.55));
+  g.add(labelPlane("ICE TO CREW", "#1a100c", "#f0c089", 3.1, 0.5, px, py + 6.15, pz));
+
+  addPipe(g, -58, -154, mx, mz, 6, 1.2, 0.15);
+  addPipe(g, mx, mz, fx, fz, 8, 1.2, 0.15);
+  addPipe(g, fx, fz, -68, -26, 10, 1.15, 0.14);
+  addPipe(g, fx, fz, px, pz, 10, 1.2, 0.15);
+  addPipe(g, px, pz, -6, -100, 8, 1.15, 0.13);
+  return g;
+}
+
+function createBatteries() {
+  const g = new THREE.Group();
+  g.name = "batteries";
+  const x = 68;
+  const z = -10;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(15.2, 0.22, 7.2), mats.concrete, x, y + 0.1, z));
+  for (let i = 0; i < 6; i++) {
+    const bx = x - 5.5 + i * 2.2;
+    g.add(mesh(new THREE.BoxGeometry(1.85, 2.15, 4.4), mats.battery, bx, y + 1.25, z));
+    g.add(mesh(new THREE.BoxGeometry(1.7, 0.08, 4.2), mats.steel, bx, y + 2.38, z));
+  }
+  g.add(labelPlane("BATTERY", "#111111", "#f4e6c8", 3.4, 0.7, x, y + 3.15, z + 3.75));
+  g.add(labelPlane("NIGHT STORE", "#111111", "#d6b48a", 3.5, 0.55, x, y + 2.45, z + 3.75));
+  g.add(mesh(new THREE.CylinderGeometry(0.12, 0.12, 18, 8), mats.cable, 61, getHeight(61, -14) + 1.4, -14, 0, 0, Math.PI / 2));
+
+  const hx = -22;
+  const hz = -88;
+  const hy = getHeight(hx, hz);
+  g.add(mesh(new THREE.BoxGeometry(7.2, 0.2, 5.2), mats.concrete, hx, hy + 0.1, hz));
+  for (let i = 0; i < 3; i++) {
+    g.add(mesh(new THREE.BoxGeometry(1.7, 1.9, 3.6), mats.battery, hx - 2 + i * 2.0, hy + 1.15, hz));
+  }
+  g.add(labelPlane("NIGHT", "#111111", "#f4e6c8", 2.2, 0.5, hx, hy + 2.55, hz + 2.7));
+  g.add(labelPlane("HABS", "#111111", "#d6b48a", 1.8, 0.42, hx, hy + 2.05, hz + 2.7));
+  return g;
+}

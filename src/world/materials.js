@@ -38,6 +38,7 @@ export const mats = {
   suit: new THREE.MeshStandardMaterial({ color: 0xe6e2d8, metalness: 0.18, roughness: 0.55 }),
   suitDark: new THREE.MeshStandardMaterial({ color: 0x5c5a56, metalness: 0.35, roughness: 0.5 }),
   visor: new THREE.MeshStandardMaterial({ color: 0xc4a04a, metalness: 0.75, roughness: 0.18, emissive: 0x3a2808, emissiveIntensity: 0.28 }),
+  battery: new THREE.MeshStandardMaterial({ color: 0x3a3e42, metalness: 0.48, roughness: 0.48 }),
 };
 
 export function makeLabelTexture(text, bg = "#1c120c", fg = "#f3e2cc") {
