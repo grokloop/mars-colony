@@ -114,6 +114,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: -68, z: -16, w: 30, d: 22 });
   landmarks.push({ id: "isru", name: "Sabatier ISRU", position: new THREE.Vector3(-68, 8, -16) });
 
+  const isru2 = createIsruTrain2();
+  root.add(isru2);
+  colliders.push({ type: "box", x: -96, z: -16, w: 18, d: 18 });
+  landmarks.push({ id: "isru2", name: "Sabatier train 2", position: new THREE.Vector3(-96, 8, -16) });
+
   root.add(createWaterFeed());
 
   const habs = createHabs();
@@ -1252,9 +1257,10 @@ function createRoads() {
     [22, 82, -16, 136, 3.6],
     [0, 32, -16, 136, 3.4],
     [135, -40, 158, -62, 3.4],
+    [-68, -16, -96, -16, 3.6],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -1940,5 +1946,25 @@ function createSolarField4() {
   }
   g.add(labelPlane("NIGHT", "#111111", "#f4e6c8", 2.2, 0.5, bx, by + 2.7, bz + 3.6));
   g.add(labelPlane("FIELD 4", "#111111", "#d6b48a", 2.4, 0.42, bx, by + 2.15, bz + 3.6));
+  return g;
+}
+
+function createIsruTrain2() {
+  const g = new THREE.Group();
+  g.name = "isru-2";
+  const x = -96;
+  const z = -16;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(18, 0.35, 18), mats.concrete, x, y + 0.12, z));
+  g.add(mesh(new THREE.CylinderGeometry(1.55, 1.7, 11, 12), mats.steelDark, x + 2.2, y + 5.8, z));
+  g.add(mesh(new THREE.TorusGeometry(2.15, 0.16, 6, 14), mats.steel, x + 2.2, y + 8.8, z, Math.PI / 2, 0, 0));
+  g.add(labelPlane("SABATIER", "#1a100c", "#f0c089", 4.4, 0.9, x + 4.2, y + 7.2, z, Math.PI / 2));
+  g.add(labelPlane("TRAIN 2", "#1a100c", "#d6b48a", 3.2, 0.55, x + 4.2, y + 6.3, z, Math.PI / 2));
+  g.add(mesh(new THREE.CylinderGeometry(2.4, 2.4, 11, 18), mats.tankCh4, x - 5.2, y + 6.0, z + 4.6, 0, 0, Math.PI / 2));
+  g.add(mesh(new THREE.CylinderGeometry(2.4, 2.4, 11, 18), mats.tankO2, x - 5.2, y + 6.0, z - 4.4, 0, 0, Math.PI / 2));
+  g.add(labelPlane("CH4", "#6a2208", "#f4e6c8", 2.8, 0.8, x + 0.4, y + 6.0, z + 4.6));
+  g.add(labelPlane("O2", "#2a3340", "#e8eef4", 2.6, 0.8, x + 0.4, y + 6.0, z - 4.4));
+  addPipeRun(g, [[-88, -16], [-80, -16], [-72, -16]], mats.tankCh4, 0.14);
+  addPipeRun(g, [[-88, -18], [-80, -20], [-72, -18]], mats.steel, 0.12);
   return g;
 }
