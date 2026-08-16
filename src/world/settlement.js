@@ -44,8 +44,7 @@ export function createSettlement() {
   root.add(createLandingPad(0, 0, { finished: true }));
   const ship = createStarship(0, 0, { name: "starship", crewHab: true });
   root.add(ship);
-  colliders.push({ type: "cyl", x: 0, z: 0, r: 7.4 });
-  colliders.push({ type: "box", x: 0, z: 13.8, w: 3.2, d: 11.0 });
+  addCrewHabHull(colliders);
   landmarks.push({ id: "starship", name: "Crew hab Starship", position: new THREE.Vector3(0, 18, 0) });
   landmarks.push({ id: "eva", name: "EVA / airlock", position: new THREE.Vector3(2, 3, 12) });
 
@@ -1585,4 +1584,18 @@ function createHabStreet() {
   addCrate(g, -26, -128, 0.2);
   addCrate(g, 1.2, -128.4, -0.3, 1.05);
   return g;
+}
+
+function addCrewHabHull(colliders) {
+  const box = (x, z, w, d) => colliders.push({ type: "box", x, z, w, d });
+  box(-6.2, 0, 5.2, 14.8);
+  box(6.2, 0, 5.2, 14.8);
+  box(0, -6.2, 10.0, 5.2);
+  box(-4.4, 5.8, 5.6, 5.2);
+  box(4.4, 5.8, 5.6, 5.2);
+  box(0, 7.15, 2.5, 0.55);
+  box(-1.28, 13.0, 0.36, 12.4);
+  box(1.28, 13.0, 0.36, 12.4);
+  box(-1.45, 19.2, 0.4, 2.8);
+  box(1.45, 19.2, 0.4, 2.8);
 }
