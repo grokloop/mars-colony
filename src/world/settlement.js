@@ -188,6 +188,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 32, z: -112, w: 8, d: 6 });
   landmarks.push({ id: "greenhouse", name: "CO2 life support", position: new THREE.Vector3(22, 4, -112) });
 
+  const gh2 = createGreenhouse2();
+  root.add(gh2);
+  colliders.push({ type: "box", x: 52, z: -112, w: 14, d: 9 });
+  landmarks.push({ id: "greenhouse2", name: "Greenhouse 2", position: new THREE.Vector3(52, 4, -112) });
+
   const eclss = createEclssSkid();
   root.add(eclss);
   colliders.push({ type: "box", x: 8, z: -98, w: 12, d: 8 });
@@ -1328,9 +1333,11 @@ function createRoads() {
     [-68, -16, -68, 12, 3.2],
     [-36, -74, 22, -80, 3.2],
     [48, -86, 22, -80, 3.2],
+    [22, -112, 52, -112, 3.2],
+    [38, -126, 52, -112, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2246,5 +2253,32 @@ function createPartsDepot() {
   g.add(mesh(new THREE.BoxGeometry(2.4, 1.1, 1.4), mats.steel, x + 1.2, y + 0.75, z + 0.4));
   g.add(labelPlane("PARTS", "#1a100c", "#f0c089", 2.8, 0.55, x, y + 4.45, z + 4.2));
   g.add(labelPlane("CARGO", "#1a100c", "#d6b48a", 2.6, 0.42, x, y + 3.9, z + 4.2));
+  return g;
+}
+
+function createGreenhouse2() {
+  const g = new THREE.Group();
+  g.name = "greenhouse-2";
+  const x = 52;
+  const z = -112;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(13.6, 0.22, 8.2), mats.concrete, x, y + 0.1, z));
+  const vault = new THREE.Mesh(new THREE.CylinderGeometry(3.7, 3.7, 12.6, 16, 1, false, 0, Math.PI), mats.glass);
+  vault.rotation.z = Math.PI / 2;
+  vault.position.set(x, y + 3.7, z);
+  vault.castShadow = false;
+  g.add(vault);
+  g.add(mesh(new THREE.BoxGeometry(12.4, 0.1, 7.6), mats.solarFrame, x, y + 3.75, z));
+  for (let i = -2; i <= 2; i++) {
+    g.add(mesh(new THREE.BoxGeometry(1.9, 0.24, 6.0), mats.soil, x + i * 2.15, y + 0.34, z));
+    for (let j = -2; j <= 2; j++) {
+      const leaf = j % 2 === 0 ? mats.plant : mats.plantLeaf;
+      g.add(mesh(new THREE.BoxGeometry(1.3, 0.48, 0.74), leaf, x + i * 2.15, y + 0.68, z + j * 1.05));
+    }
+    g.add(mesh(new THREE.BoxGeometry(1.55, 0.05, 5.6), mats.glowWarm, x + i * 2.15, y + 3.2, z));
+  }
+  g.add(labelPlane("GREENHOUSE 2", "#1a100c", "#f0c089", 4.0, 0.65, x, y + 5.15, z + 0.15));
+  g.add(labelPlane("GROW FROM CO2", "#1a100c", "#d6b48a", 3.6, 0.48, x, y + 4.5, z + 0.15));
+  addPipeRun(g, [[32, -112], [42, -112], [52, -112]], mats.pipe, 0.1);
   return g;
 }
