@@ -134,6 +134,19 @@ export function createSettlement() {
   colliders.push({ type: "box", x: -13, z: -142, w: 8, d: 14 });
   landmarks.push({ id: "hab3", name: "Hab street", position: new THREE.Vector3(-13, 5, -134) });
 
+  const hood = createNeighborhood();
+  root.add(hood);
+  colliders.push({ type: "box", x: -33, z: -120, w: 28, d: 6 });
+  colliders.push({ type: "box", x: -6, z: -120, w: 5, d: 24 });
+  colliders.push({ type: "box", x: -4, z: -58, w: 5, d: 70 });
+  colliders.push({ type: "cyl", x: 2, z: -22, r: 1.6 });
+  landmarks.push({ id: "corridors", name: "Pressurized neighborhood", position: new THREE.Vector3(-20, 4, -120) });
+
+  const yard = createConstructionYard();
+  root.add(yard);
+  colliders.push({ type: "box", x: -36, z: -74, w: 18, d: 14 });
+  landmarks.push({ id: "yard", name: "Construction yard", position: new THREE.Vector3(-36, 5, -74) });
+
   const gh = createGreenhouse();
   root.add(gh);
   colliders.push({ type: "box", x: 22, z: -112, w: 16, d: 10 });
@@ -1197,9 +1210,13 @@ function createRoads() {
     [112, -83, 135, -40, 3.6],
     [68, -10, 68, 6, 3.2],
     [-13, -134, -28, -138, 3.0],
+    [-46, -108, -20, -132, 3.2],
+    [-6, -108, -6, -132, 3.2],
+    [-6, -96, 2, -22, 3.4],
+    [-32, -98, -36, -74, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -1589,6 +1606,10 @@ function addPropColliders(colliders) {
   cyl(-104, -176, 0.7);
   for (const [x, z] of [[-90, -184], [-88.4, -182.6], [-91.2, -181.8], [-86.6, -185.2]]) box(x, z, 1.2, 1.2);
   crate(-84.5, -180.4, 0.85);
+  crate(-28, -68);
+  crate(-27, -71, 1.1);
+  crate(-44, -80);
+  crate(-42.5, -68.5, 0.95);
 }
 
 function createHabStreet() {
@@ -1698,5 +1719,61 @@ function createBatteryYard2() {
   }
   g.add(labelPlane("NIGHT", "#111111", "#f4e6c8", 2.2, 0.5, hx, hy + 2.55, hz + 2.7));
   g.add(labelPlane("HAB 3-5", "#111111", "#d6b48a", 2.2, 0.42, hx, hy + 2.05, hz + 2.7));
+  return g;
+}
+
+function addPressureTube(g, ax, az, bx, bz) {
+  const mx = (ax + bx) * 0.5;
+  const mz = (az + bz) * 0.5;
+  const y = (getHeight(ax, az) + getHeight(bx, bz)) * 0.5 + 2.45;
+  const len = Math.hypot(bx - ax, bz - az);
+  const tube = mesh(new THREE.CylinderGeometry(1.12, 1.12, len, 12), mats.habDark, mx, y, mz, Math.PI / 2, 0, 0);
+  tube.rotation.y = Math.atan2(bx - ax, bz - az);
+  g.add(tube);
+  g.add(mesh(new THREE.TorusGeometry(1.18, 0.07, 6, 14), mats.steel, ax, y, az, Math.PI / 2, 0, 0));
+  g.add(mesh(new THREE.TorusGeometry(1.18, 0.07, 6, 14), mats.steel, bx, y, bz, Math.PI / 2, 0, 0));
+}
+
+function createNeighborhood() {
+  const g = new THREE.Group();
+  g.name = "neighborhood";
+  addPressureTube(g, -46, -108, -20, -132);
+  addPressureTube(g, -6, -108, -6, -132);
+  addPressureTube(g, -46, -108, -32, -98);
+  addPressureTube(g, -6, -96, 2, -22);
+  const [nx, ny, nz] = sit(-33, -120, 3.4);
+  g.add(labelPlane("PRESSURE", "#1a100c", "#f0c089", 3.2, 0.55, nx, ny + 1.2, nz));
+  g.add(labelPlane("HAB 2-5", "#1a100c", "#d6b48a", 2.8, 0.45, nx, ny + 0.55, nz));
+
+  const vx = 2;
+  const vz = -22;
+  const vy = getHeight(vx, vz);
+  g.add(mesh(new THREE.CylinderGeometry(1.45, 1.45, 2.8, 12), mats.habDark, vx, vy + 1.55, vz));
+  g.add(mesh(new THREE.BoxGeometry(1.1, 1.8, 0.12), mats.steelDark, vx, vy + 1.5, vz + 1.5));
+  g.add(mesh(new THREE.TorusGeometry(1.48, 0.08, 6, 14), mats.steel, vx, vy + 2.95, vz, Math.PI / 2, 0, 0));
+  g.add(labelPlane("CREW ACCESS", "#1a100c", "#f0c089", 3.4, 0.6, vx, vy + 3.55, vz + 0.2));
+  g.add(labelPlane("TO STARSHIP", "#1a100c", "#d6b48a", 3.1, 0.45, vx, vy + 2.95, vz + 0.2));
+  return g;
+}
+
+function createConstructionYard() {
+  const g = new THREE.Group();
+  g.name = "yard";
+  const x = -36;
+  const z = -74;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(18, 0.22, 14), mats.concrete, x, y + 0.08, z));
+  addPressureModule(g, -40, -76, 0.35, { onStands: true, partial: true, label: "HAB 6" });
+  addPressureModule(g, -32, -70, -0.2, { onStands: true, label: "NEXT" });
+  g.add(mesh(new THREE.BoxGeometry(0.28, 9.2, 0.28), mats.lattice, x + 6.2, y + 4.7, z - 3.4));
+  g.add(mesh(new THREE.BoxGeometry(8.4, 0.22, 0.22), mats.lattice, x + 2.4, y + 9.2, z - 3.4));
+  g.add(mesh(new THREE.CylinderGeometry(0.05, 0.05, 6.8, 6), mats.cable, x - 1.2, y + 6.2, z - 2.2));
+  g.add(mesh(new THREE.BoxGeometry(1.4, 1.2, 1.4), mats.crate, x + 1.6, y + 8.6, z - 3.2));
+  addCrate(g, -28, -68, 0.2);
+  addCrate(g, -27, -71, -0.4, 1.1);
+  addCrate(g, -44, -80, 0.3);
+  addCrate(g, -42.5, -68.5, 0.1, 0.95);
+  g.add(labelPlane("CONSTRUCTION", "#1a100c", "#f0c089", 4.0, 0.7, x, y + 4.6, z + 6.4));
+  g.add(labelPlane("NEXT MODULES", "#1a100c", "#d6b48a", 3.5, 0.5, x, y + 3.9, z + 6.4));
   return g;
 }

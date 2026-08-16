@@ -39,7 +39,7 @@ Spawn is on the landing pad berm, looking at the Starships.
 - Prepared landing surfaces: graded pads, blast berms, approach markers, and a third pad still being prepped
 - Solar farm east of the pad (expanded rows plus second and third fields), with power lines to the Sabatier plant and extra battery yards for night
 - Sabatier ISRU west: CO2 intake, ice/water feed, CH4 and O2 tanks
-- Hab cluster north along the road, hab modules being assembled from cargo kits, cargo-derived pressure habs, plus a second hab street (HAB 3–5) growing toward permanence
+- Hab cluster, pressure habs, and hab street (HAB 2–5) now linked by pressurized corridors, with a crew-access tube toward the pad Starship. A construction yard is assembling the next modules from cargo. Early settlement, not a city.
 - CO2 greenhouse / life support: Mars atmosphere intake and compressor, plant rows in compressed CO2, small O2 tank, plus a second food grow vault
 - Pad is the spaceport: methalox transfer lines from Sabatier, CH4/O2 load stand, return-propellant labels
 - Resource survey on the ice-rich northern plain: stakes, sample caches, ice/water and deposit flags, survey rover tracks
