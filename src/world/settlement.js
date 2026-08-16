@@ -108,6 +108,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 158, z: -28, w: 12, d: 8 });
   landmarks.push({ id: "solar4", name: "Solar field 4", position: new THREE.Vector3(158, 5, -62) });
 
+  const fence = createSolarDustFence();
+  root.add(fence);
+  colliders.push({ type: "box", x: 142, z: -62, w: 1.2, d: 22 });
+  landmarks.push({ id: "dustfence", name: "Solar dust fence", position: new THREE.Vector3(142, 4, -62) });
+
   root.add(createPowerRun());
   root.add(createSolarTie());
 
@@ -1361,9 +1366,10 @@ function createRoads() {
     [8, -98, -8, -88, 3.2],
     [-22, -88, -8, -88, 3.2],
     [-96, -16, -96, 4, 3.2],
+    [158, -62, 142, -62, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4], [-96, 4, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4], [-96, 4, 3.4], [142, -62, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2376,5 +2382,23 @@ function createCo2Capture() {
   g.add(labelPlane("CO2", "#1a100c", "#f0c089", 2.2, 0.55, x - 2.4, y + 4.8, z + 1.4));
   g.add(labelPlane("INTAKE 2", "#1a100c", "#d6b48a", 3.0, 0.45, x + 2.2, y + 2.7, z + 1.35));
   addPipeRun(g, [[-96, 4], [-96, -6], [-96, -16]], mats.pipe, 0.12);
+  return g;
+}
+
+function createSolarDustFence() {
+  const g = new THREE.Group();
+  g.name = "solar-dust-fence";
+  const x = 142;
+  const z = -62;
+  const y = getHeight(x, z);
+  for (let i = 0; i < 8; i++) {
+    const pz = z - 10.5 + i * 3.0;
+    g.add(mesh(new THREE.BoxGeometry(0.18, 3.4, 0.18), mats.steelDark, x, y + 1.8, pz));
+    if (i < 7) {
+      g.add(mesh(new THREE.BoxGeometry(0.06, 2.6, 2.7), mats.lattice, x, y + 1.7, pz + 1.5));
+    }
+  }
+  g.add(labelPlane("DUST", "#1a100c", "#f0c089", 2.4, 0.45, x - 1.4, y + 3.5, z));
+  g.add(labelPlane("FENCE", "#1a100c", "#d6b48a", 2.4, 0.4, x - 1.4, y + 3.0, z));
   return g;
 }
