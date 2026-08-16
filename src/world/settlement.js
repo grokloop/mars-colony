@@ -237,6 +237,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 48, z: -86, w: 16, d: 12 });
   landmarks.push({ id: "workshop", name: "Workshop", position: new THREE.Vector3(48, 5, -86) });
 
+  const shop2 = createWorkshopBay2();
+  root.add(shop2);
+  colliders.push({ type: "box", x: 66, z: -74, w: 16, d: 12 });
+  landmarks.push({ id: "workshop2", name: "Workshop bay 2", position: new THREE.Vector3(66, 5, -74) });
+
   const tower = createCommsTower();
   root.add(tower);
   colliders.push({ type: "cyl", x: -18, z: -138, r: 3 });
@@ -272,6 +277,7 @@ export function createSettlement() {
   root.add(createOptimus(-34, -92, -1.2));
   root.add(createOptimus(-28, -104, 0.3));
   root.add(createOptimus(16, -120, 0.6));
+  root.add(createOptimus(70, -70, 0.4));
   root.add(createOptimus(-28, 128, 1.1));
   root.add(createEvaPresence());
 
@@ -1264,9 +1270,10 @@ function createRoads() {
     [135, -40, 158, -62, 3.4],
     [-68, -16, -96, -16, 3.6],
     [-58, -158, -78, -172, 3.4],
+    [48, -86, 66, -74, 3.4],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -1995,5 +2002,27 @@ function createIceMine2() {
   g.add(mesh(new THREE.BoxGeometry(6.4, 0.35, 1.1), mats.steelDark, x + 3.6, y + 1.4, z, 0, 0, -0.18));
   g.add(labelPlane("ICE 2", "#1a2830", "#d6e6ef", 2.6, 0.65, x, y + 8.4, z + 2.6));
   addPipeRun(g, [[-74, -168], [-68, -150], [-64, -90], [-68, -26]], mats.pipe, 0.13);
+  return g;
+}
+
+function createWorkshopBay2() {
+  const g = new THREE.Group();
+  g.name = "workshop-2";
+  const x = 66;
+  const z = -74;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(16, 0.28, 12), mats.concrete, x, y + 0.1, z));
+  const hut = mesh(new THREE.CylinderGeometry(5.4, 5.4, 14, 16, 1, false, 0, Math.PI), mats.habDark, x - 1.2, y + 3.1, z);
+  hut.rotation.z = Math.PI / 2;
+  g.add(hut);
+  g.add(mesh(new THREE.BoxGeometry(0.2, 3.8, 5.8), mats.steelDark, x - 8.1, y + 2.0, z));
+  g.add(mesh(new THREE.BoxGeometry(0.28, 8.4, 0.28), mats.lattice, x + 6.4, y + 4.3, z - 3.6));
+  g.add(mesh(new THREE.BoxGeometry(7.2, 0.2, 0.2), mats.lattice, x + 3.0, y + 8.5, z - 3.6));
+  g.add(mesh(new THREE.BoxGeometry(1.5, 1.1, 1.5), mats.crate, x + 2.2, y + 8.0, z - 3.4));
+  addCrate(g, 73.2, -69.4, 0.2);
+  addCrate(g, 74.4, -71.6, -0.3, 1.05);
+  addCrate(g, 58.6, -68.8, 0.15, 0.9);
+  g.add(labelPlane("WORKSHOP", "#1a100c", "#f0c089", 3.8, 0.75, x, y + 5.4, z + 0.2));
+  g.add(labelPlane("BAY 2", "#1a100c", "#d6b48a", 2.6, 0.5, x, y + 4.7, z + 0.2));
   return g;
 }
