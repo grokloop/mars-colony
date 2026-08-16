@@ -261,6 +261,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 48, z: -86, w: 16, d: 12 });
   landmarks.push({ id: "workshop", name: "Workshop", position: new THREE.Vector3(48, 5, -86) });
 
+  const depot = createPartsDepot();
+  root.add(depot);
+  colliders.push({ type: "box", x: 22, z: -80, w: 12, d: 8 });
+  landmarks.push({ id: "depot", name: "Spare-parts depot", position: new THREE.Vector3(22, 4, -80) });
+
   const shop2 = createWorkshopBay2();
   root.add(shop2);
   colliders.push({ type: "box", x: 66, z: -74, w: 16, d: 12 });
@@ -1321,9 +1326,11 @@ function createRoads() {
     [22, -112, 8, -98, 3.2],
     [48, -86, 48, -70, 3.2],
     [-68, -16, -68, 12, 3.2],
+    [-36, -74, 22, -80, 3.2],
+    [48, -86, 22, -80, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -1674,6 +1681,7 @@ function addPropColliders(colliders) {
   crate(ox - 4.2, oz + 1.4, 1.12);
   crate(ox - 5.4, oz - 0.6, 1.05);
   crate(5.4, 13.2, 0.85);
+  for (const [x, z] of [[18, -78], [20.2, -77.4], [18.4, -81.2], [24.6, -78.6], [26.2, -81.8]]) crate(x, z);
   const wx2 = -60, wz2 = 66;
   for (const [x, z] of [[wx2, wz2], [wx2 - 1.8, wz2 + 2.1], [wx2 + 1.6, wz2 + 2.4], [wx2 - 2.4, wz2 - 1.2], [wx2 + 0.8, wz2 - 2.2], [wx2 - 3.2, wz2 + 0.6]]) crate(x, z);
   crate(wx2 - 4.2, wz2 + 1.4, 1.12);
@@ -2218,5 +2226,25 @@ function createIsruRadiators() {
   g.add(labelPlane("REJECT", "#1a100c", "#f0c089", 2.8, 0.5, x, y + 4.55, z + 3.2));
   g.add(labelPlane("HEAT", "#1a100c", "#d6b48a", 2.4, 0.42, x, y + 4.0, z + 3.2));
   addPipeRun(g, [[-68, -6], [-68, 4], [-68, 12]], mats.pipe, 0.1);
+  return g;
+}
+
+function createPartsDepot() {
+  const g = new THREE.Group();
+  g.name = "parts-depot";
+  const x = 22;
+  const z = -80;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(12.2, 0.18, 8.2), mats.concrete, x, y + 0.08, z));
+  g.add(mesh(new THREE.BoxGeometry(0.22, 3.8, 8.2), mats.steelDark, x - 5.8, y + 2.0, z));
+  g.add(mesh(new THREE.BoxGeometry(12.2, 0.14, 8.4), mats.steel, x, y + 3.95, z));
+  addCrate(g, 18, -78, 0.15, 1);
+  addCrate(g, 20.2, -77.4, -0.2, 0.95);
+  addCrate(g, 18.4, -81.2, 0.3, 1.05);
+  addCrate(g, 24.6, -78.6, -0.1, 1);
+  addCrate(g, 26.2, -81.8, 0.25, 0.9);
+  g.add(mesh(new THREE.BoxGeometry(2.4, 1.1, 1.4), mats.steel, x + 1.2, y + 0.75, z + 0.4));
+  g.add(labelPlane("PARTS", "#1a100c", "#f0c089", 2.8, 0.55, x, y + 4.45, z + 4.2));
+  g.add(labelPlane("CARGO", "#1a100c", "#d6b48a", 2.6, 0.42, x, y + 3.9, z + 4.2));
   return g;
 }
