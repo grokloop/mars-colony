@@ -328,6 +328,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 66, z: -74, w: 16, d: 12 });
   landmarks.push({ id: "workshop2", name: "Workshop bay 2", position: new THREE.Vector3(66, 5, -74) });
 
+  const press = createSinterPress();
+  root.add(press);
+  colliders.push({ type: "box", x: 66, z: -90, w: 10, d: 8 });
+  landmarks.push({ id: "press", name: "Sinter press", position: new THREE.Vector3(66, 4, -90) });
+
   const shelter = createRoverShelter();
   root.add(shelter);
   root.add(createRover(48, -70, 0.2));
@@ -1413,9 +1418,10 @@ function createRoads() {
     [-68, 4, -50, 4, 3.2],
     [-58, -158, -58, -142, 3.2],
     [-15, -8, -32, -22, 3.2],
+    [66, -74, 66, -90, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4], [-96, 4, 3.4], [142, -62, 3.4], [28, -140, 3.4], [-90, -148, 3.4], [12, 18, 3.2], [36, 8, 3.4], [36, -6, 3.4], [-50, 4, 3.4], [-58, -142, 3.4], [-32, -22, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4], [-96, 4, 3.4], [142, -62, 3.4], [28, -140, 3.4], [-90, -148, 3.4], [12, 18, 3.2], [36, 8, 3.4], [36, -6, 3.4], [-50, 4, 3.4], [-58, -142, 3.4], [-32, -22, 3.4], [66, -90, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2572,5 +2578,23 @@ function createPumpHouse() {
   g.add(labelPlane("METHALOX", "#1a100c", "#d6b48a", 3.2, 0.42, x, y + 3.6, z + 3.7));
   addPipeRun(g, [[-32, -14], [-32, -18], [-32, -22]], mats.tankCh4, 0.11);
   addPipeRun(g, [[-32, -18], [-32, -22], [-18, -10]], mats.steel, 0.1);
+  return g;
+}
+
+function createSinterPress() {
+  const g = new THREE.Group();
+  g.name = "sinter-press";
+  const x = 66;
+  const z = -90;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(9.6, 0.2, 7.2), mats.concrete, x, y + 0.1, z));
+  g.add(mesh(new THREE.BoxGeometry(4.6, 2.2, 3.4), mats.steelDark, x, y + 1.3, z));
+  g.add(mesh(new THREE.BoxGeometry(1.4, 3.4, 1.4), mats.steel, x, y + 3.2, z));
+  g.add(mesh(new THREE.BoxGeometry(3.2, 0.35, 2.4), mats.steel, x, y + 4.9, z));
+  g.add(mesh(new THREE.BoxGeometry(2.2, 0.55, 1.6), mats.habDark, x, y + 2.55, z));
+  addCrate(g, 62.2, -87.6, 0.2, 0.9);
+  addCrate(g, 70.0, -92.2, -0.15, 0.85);
+  g.add(labelPlane("SINTER", "#1a100c", "#f0c089", 2.8, 0.5, x, y + 5.55, z + 3.7));
+  g.add(labelPlane("PRESS", "#1a100c", "#d6b48a", 2.4, 0.42, x, y + 5.0, z + 3.7));
   return g;
 }
