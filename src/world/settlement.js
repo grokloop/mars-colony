@@ -198,6 +198,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: -18, z: -88, w: 10, d: 8 });
   landmarks.push({ id: "water", name: "Water loop", position: new THREE.Vector3(-18, 4, -88) });
 
+  const potable = createPotableFarm();
+  root.add(potable);
+  colliders.push({ type: "box", x: 18, z: -152, w: 14, d: 10 });
+  landmarks.push({ id: "potable", name: "Potable water store", position: new THREE.Vector3(18, 4, -152) });
+
   const batt = createBatteries();
   root.add(batt);
   colliders.push({ type: "box", x: 68, z: -10, w: 16, d: 8 });
@@ -1271,9 +1276,11 @@ function createRoads() {
     [-68, -16, -96, -16, 3.6],
     [-58, -158, -78, -172, 3.4],
     [48, -86, 66, -74, 3.4],
+    [8, -142, 18, -152, 3.2],
+    [-18, -88, 18, -152, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2024,5 +2031,22 @@ function createWorkshopBay2() {
   addCrate(g, 58.6, -68.8, 0.15, 0.9);
   g.add(labelPlane("WORKSHOP", "#1a100c", "#f0c089", 3.8, 0.75, x, y + 5.4, z + 0.2));
   g.add(labelPlane("BAY 2", "#1a100c", "#d6b48a", 2.6, 0.5, x, y + 4.7, z + 0.2));
+  return g;
+}
+
+function createPotableFarm() {
+  const g = new THREE.Group();
+  g.name = "potable";
+  const x = 18;
+  const z = -152;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(14, 0.22, 10), mats.concrete, x, y + 0.1, z));
+  for (let i = 0; i < 4; i++) {
+    const tx = x - 4.5 + i * 3.0;
+    g.add(mesh(new THREE.CylinderGeometry(1.15, 1.15, 6.2, 14), mats.pipe, tx, y + 1.5, z, 0, 0, Math.PI / 2));
+  }
+  g.add(labelPlane("POTABLE", "#1a2830", "#d6e6ef", 3.4, 0.7, x, y + 3.35, z + 4.6));
+  g.add(labelPlane("HAB STORE", "#1a2830", "#d6b48a", 3.2, 0.5, x, y + 2.7, z + 4.6));
+  addPipeRun(g, [[18, -148], [8, -142], [-6, -120], [-18, -88]], mats.pipe, 0.12);
   return g;
 }
