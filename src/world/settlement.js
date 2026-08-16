@@ -155,6 +155,12 @@ export function createSettlement() {
   colliders.push({ type: "box", x: -50, z: -72, w: 10, d: 10 });
   landmarks.push({ id: "med", name: "Crew ops / medical", position: new THREE.Vector3(-50, 5, -72) });
 
+  const commons = createCommons();
+  root.add(commons);
+  colliders.push({ type: "box", x: 10, z: -124, w: 14, d: 10 });
+  colliders.push({ type: "box", x: 2, z: -128, w: 10, d: 5 });
+  landmarks.push({ id: "commons", name: "Crew commons / mess", position: new THREE.Vector3(10, 5, -124) });
+
   const gh = createGreenhouse();
   root.add(gh);
   colliders.push({ type: "box", x: 22, z: -112, w: 16, d: 10 });
@@ -194,6 +200,10 @@ export function createSettlement() {
   root.add(methalox);
   colliders.push({ type: "box", x: -15, z: -8, w: 10, d: 7 });
   landmarks.push({ id: "spaceport", name: "Methalox spaceport", position: new THREE.Vector3(-15, 4, -8) });
+  const stock = createMethaloxStockpile();
+  root.add(stock);
+  colliders.push({ type: "box", x: 20, z: 8, w: 16, d: 12 });
+  landmarks.push({ id: "stock", name: "Methalox stockpile", position: new THREE.Vector3(20, 4, 8) });
   root.add(createMethaloxLines());
   root.add(createSpaceportSign());
 
@@ -242,6 +252,7 @@ export function createSettlement() {
   root.add(createOptimus(-80, -174, 0.8));
   root.add(createOptimus(-34, -92, -1.2));
   root.add(createOptimus(-28, -104, 0.3));
+  root.add(createOptimus(16, -120, 0.6));
   root.add(createEvaPresence());
 
   addPropColliders(colliders);
@@ -1224,9 +1235,12 @@ function createRoads() {
     [-32, -98, -36, -74, 3.2],
     [-40, -76, -32, -98, 3.2],
     [-40, -76, -50, -72, 3.0],
+    [-6, -132, 10, -124, 3.2],
+    [10, -124, 8, -142, 3.0],
+    [0, 8, 20, 8, 3.4],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -1585,7 +1599,7 @@ function addPropColliders(colliders) {
   for (const [x, z] of [[16, 14], [8, -62], [30, 74], [-94, -182]]) cyl(x, z, 2.4);
   for (const [x, z] of [[-55, -146], [-61, -118], [-66, -78], [-68, -38], [-70, -62], [-50, -24], [-18, -14], [22, 12]]) cyl(x, z, 3.4);
 
-  for (const [x, z] of [[42, 22], [39, 26], [26, 78], [26, 68], [22, 72], [-80, -174], [-34, -92], [-28, -104]]) cyl(x, z, 0.55);
+  for (const [x, z] of [[42, 22], [39, 26], [26, 78], [26, 68], [22, 72], [-80, -174], [-34, -92], [-28, -104], [16, -120]]) cyl(x, z, 0.55);
 
   for (const [x, z] of [[2.4, 12.2], [-2.2, 11.5], [3.8, 15.6], [0.6, 18.2]]) cyl(x, z, 0.55);
   box(4.3, 14.8, 1.4, 1.0);
@@ -1620,6 +1634,12 @@ function addPropColliders(colliders) {
   crate(-27, -71, 1.1);
   crate(-44, -80);
   crate(-42.5, -68.5, 0.95);
+  crate(17.2, -119.4);
+  crate(18.4, -121.8, 1.05);
+  crate(3.2, -118.6, 0.9);
+  crate(16.6, -128.8, 0.95);
+  crate(27.2, 12.4, 0.9);
+  crate(12.6, 13.1, 0.95);
 }
 
 function createHabStreet() {
@@ -1753,6 +1773,8 @@ function createNeighborhood() {
   addPressureTube(g, -6, -96, 2, -22);
   addPressureTube(g, -40, -76, -32, -98);
   addPressureTube(g, -40, -76, -50, -72);
+  addPressureTube(g, -6, -132, 10, -124);
+  addPressureTube(g, 10, -124, 8, -142);
   const [nx, ny, nz] = sit(-33, -120, 3.4);
   g.add(labelPlane("PRESSURE", "#1a100c", "#f0c089", 3.2, 0.55, nx, ny + 1.2, nz));
   g.add(labelPlane("HAB 2-5", "#1a100c", "#d6b48a", 2.8, 0.45, nx, ny + 0.55, nz));
@@ -1802,5 +1824,44 @@ function createCrewOps() {
   g.add(labelPlane("MEDICAL", "#1a100c", "#d6b48a", 3.0, 0.45, x, y + 4.75, z + 0.2));
   addCrate(g, -55.2, -76.4, 0.2, 0.9);
   addCrate(g, -44.8, -68.6, -0.25, 0.95);
+  return g;
+}
+
+function createCommons() {
+  const g = new THREE.Group();
+  g.name = "commons";
+  const x = 10;
+  const z = -124;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(16, 0.22, 12), mats.concrete, x, y + 0.08, z));
+  addPressureModule(g, x, z, 0, { airlock: true, label: "MESS" });
+  g.add(labelPlane("CREW COMMONS", "#1a100c", "#f0c089", 4.2, 0.7, x, y + 6.15, z + 0.2));
+  g.add(labelPlane("FROM CARGO", "#1a100c", "#d6b48a", 3.4, 0.48, x, y + 5.5, z + 0.2));
+  addCrate(g, 17.2, -119.4, 0.2);
+  addCrate(g, 18.4, -121.8, -0.3, 1.05);
+  addCrate(g, 3.2, -118.6, 0.15, 0.9);
+  addCrate(g, 16.6, -128.8, 0.4, 0.95);
+  return g;
+}
+
+function createMethaloxStockpile() {
+  const g = new THREE.Group();
+  g.name = "methalox-stock";
+  const x = 20;
+  const z = 8;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(16, 0.22, 12), mats.concrete, x, y + 0.08, z));
+  for (let i = 0; i < 3; i++) {
+    const tz = z - 3.4 + i * 3.4;
+    g.add(mesh(new THREE.CylinderGeometry(1.15, 1.15, 6.4, 16), mats.tankCh4, x - 3.2, y + 1.45, tz, 0, 0, Math.PI / 2));
+    g.add(mesh(new THREE.CylinderGeometry(1.15, 1.15, 6.4, 16), mats.tankO2, x + 3.2, y + 1.45, tz, 0, 0, Math.PI / 2));
+  }
+  g.add(labelPlane("METHALOX", "#1a100c", "#f0c089", 3.6, 0.7, x, y + 3.55, z + 6.2));
+  g.add(labelPlane("RETURN STOCK", "#1a100c", "#d6b48a", 3.8, 0.5, x, y + 2.9, z + 6.2));
+  g.add(labelPlane("CH4", "#6a2208", "#f4e6c8", 1.6, 0.42, x - 3.2, y + 2.85, z + 3.6));
+  g.add(labelPlane("O2", "#2a3340", "#e8eef4", 1.4, 0.42, x + 3.2, y + 2.85, z + 3.6));
+  addPipeRun(g, [[20, 2], [8, -2], [-8, -6], [-15, -8]], mats.tankCh4, 0.12);
+  addCrate(g, 27.2, 12.4, 0.2, 0.9);
+  addCrate(g, 12.6, 13.1, -0.25, 0.95);
   return g;
 }
