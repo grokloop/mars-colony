@@ -1197,6 +1197,12 @@ function createMethaloxStand() {
   g.add(mesh(new THREE.BoxGeometry(1.6, 0.35, 0.85), mats.steelDark, x - 0.4, y + 0.55, z + 2.55));
   g.add(labelPlane("METHALOX", "#1a100c", "#f0c089", 3.15, 0.68, x + 2.5, y + 4.12, z));
   g.add(labelPlane("RETURN PROPELLANT", "#1a100c", "#f0c089", 3.85, 0.58, x + 2.5, y + 3.42, z + 0.02));
+  g.add(mesh(new THREE.CylinderGeometry(0.22, 0.28, 3.2, 10), mats.steelDark, x + 5.4, y + 2.0, z + 0.2));
+  g.add(mesh(new THREE.BoxGeometry(7.6, 0.22, 0.22), mats.steel, x + 8.8, y + 3.55, z + 1.4, 0, -0.45, 0.18));
+  g.add(mesh(new THREE.BoxGeometry(6.2, 0.18, 0.18), mats.tankCh4, x + 11.6, y + 4.4, z + 2.6, 0, -0.45, 0.12));
+  g.add(mesh(new THREE.BoxGeometry(6.2, 0.18, 0.18), mats.steel, x + 11.6, y + 4.05, z + 2.85, 0, -0.45, 0.12));
+  g.add(mesh(new THREE.CylinderGeometry(0.28, 0.22, 1.1, 10), mats.steelDark, x + 14.2, y + 4.7, z + 3.6));
+  g.add(labelPlane("LOAD ARM", "#1a100c", "#f0c089", 2.8, 0.45, x + 8.2, y + 4.85, z + 1.1, -0.45));
   return g;
 }
 
