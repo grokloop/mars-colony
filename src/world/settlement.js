@@ -183,6 +183,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 32, z: -112, w: 8, d: 6 });
   landmarks.push({ id: "greenhouse", name: "CO2 life support", position: new THREE.Vector3(22, 4, -112) });
 
+  const eclss = createEclssSkid();
+  root.add(eclss);
+  colliders.push({ type: "box", x: 8, z: -98, w: 12, d: 8 });
+  landmarks.push({ id: "eclss", name: "Hab ECLSS / CO2 scrub", position: new THREE.Vector3(8, 4, -98) });
+
   const food = createFoodWing();
   root.add(food);
   colliders.push({ type: "box", x: 38, z: -126, w: 14, d: 9 });
@@ -1293,9 +1298,11 @@ function createRoads() {
     [8, -142, 18, -152, 3.2],
     [-18, -88, 18, -152, 3.2],
     [-32, -148, -8, -162, 3.2],
+    [-6, -108, 8, -98, 3.2],
+    [22, -112, 8, -98, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2131,5 +2138,26 @@ function createEarthDish2() {
   g.add(mount);
   g.add(labelPlane("EARTH 2", "#1a100c", "#f0c089", 3.2, 0.65, x, y + 3.6, z + 5.2));
   g.add(labelPlane("BACKUP LINK", "#1a100c", "#d6b48a", 3.4, 0.5, x, y + 2.95, z + 5.2));
+  return g;
+}
+
+function createEclssSkid() {
+  const g = new THREE.Group();
+  g.name = "eclss";
+  const x = 8;
+  const z = -98;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(11.2, 0.22, 7.2), mats.concrete, x, y + 0.1, z));
+  g.add(mesh(new THREE.BoxGeometry(4.8, 2.6, 3.4), mats.habDark, x - 2.4, y + 1.5, z));
+  g.add(labelPlane("ECLSS", "#1a100c", "#f0c089", 3.2, 0.6, x - 2.4, y + 3.05, z + 1.85));
+  g.add(labelPlane("CO2 SCRUB", "#1a100c", "#d6b48a", 3.4, 0.45, x - 2.4, y + 2.45, z + 1.85));
+  g.add(mesh(new THREE.CylinderGeometry(0.85, 0.85, 3.4, 12), mats.steelDark, x + 1.6, y + 1.9, z - 1.4));
+  g.add(mesh(new THREE.CylinderGeometry(0.85, 0.85, 3.4, 12), mats.steelDark, x + 3.4, y + 1.9, z - 1.4));
+  g.add(labelPlane("AMINE", "#1a100c", "#d6b48a", 2.2, 0.4, x + 2.5, y + 3.8, z - 1.4));
+  g.add(mesh(new THREE.CylinderGeometry(0.7, 0.7, 2.6, 12), mats.tankO2, x + 1.6, y + 1.5, z + 1.8));
+  g.add(mesh(new THREE.CylinderGeometry(0.7, 0.7, 2.6, 12), mats.tankO2, x + 3.4, y + 1.5, z + 1.8));
+  g.add(labelPlane("O2", "#2a3340", "#e8eef4", 1.4, 0.4, x + 2.5, y + 3.05, z + 1.8));
+  addPipeRun(g, [[8, -98], [14, -104], [22, -112]], mats.pipe, 0.1);
+  addPipeRun(g, [[8, -98], [2, -102], [-6, -108]], mats.tankO2, 0.09);
   return g;
 }
