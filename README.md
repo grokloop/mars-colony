@@ -36,14 +36,16 @@ Spawn is on the landing pad berm, looking at the Starships.
 - Pad Starship on landing legs (stainless, flaps, nose, heat-shield tiles, Raptor bells)
 - Second uncrewed cargo Starship already landed, hatch open, ramp and crates being offloaded
 - Prepared landing surfaces: graded pads, blast berms, approach markers, and a third pad still being prepped
-- Solar farm east of the pad, with power lines to the Sabatier plant
+- Solar farm east of the pad (expanded rows plus a second field), with power lines to the Sabatier plant
 - Sabatier ISRU west: CO2 intake, ice/water feed, CH4 and O2 tanks
 - Hab cluster and greenhouse north along the road
+- Hab modules being assembled from cargo kits: a module on jacks, airlock being fitted, crates
+- Resource survey on the ice-rich northern plain: stakes, sample caches, ice/water and deposit flags, survey rover tracks
 - Workshop hangar (early cargo / construction)
 - Comms tower
 - Ice-mining rig with a water-ice pile and a feed line to Sabatier
-- Optimus-class robots on cargo offload and landing prep
-- Paths connecting pad, cargo, plant, habs, and mine
+- Optimus-class robots on cargo offload, landing prep, survey, and hab assembly
+- Paths connecting pad, cargo, plant, habs, mine, survey, and the new solar field
 
 ## Stack
 

@@ -28,6 +28,9 @@ export const mats = {
   pipe: new THREE.MeshStandardMaterial({ color: 0x7a8a94, metalness: 0.55, roughness: 0.4 }),
   cable: new THREE.MeshStandardMaterial({ color: 0x2a2622, metalness: 0.35, roughness: 0.55 }),
   robot: new THREE.MeshStandardMaterial({ color: 0xc8ccd0, metalness: 0.62, roughness: 0.38 }),
+  flagIce: new THREE.MeshStandardMaterial({ color: 0xc5d8e4, roughness: 0.72, metalness: 0.04 }),
+  flagDeposit: new THREE.MeshStandardMaterial({ color: 0xb85a28, roughness: 0.8, metalness: 0.06 }),
+  track: new THREE.MeshStandardMaterial({ color: 0x3d2418, roughness: 0.97 }),
 };
 
 export function makeLabelTexture(text, bg = "#1c120c", fg = "#f3e2cc") {
