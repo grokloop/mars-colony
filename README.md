@@ -65,7 +65,7 @@ Spawn is on the landing pad berm, looking at the Starships.
 - Resource survey on the ice-rich northern plain: stakes, sample caches, ice/water and deposit flags, survey rover tracks
 - Workshop hangar (early cargo / construction)
 - Comms tower plus a large Earth-pointing dish (DSN / Starship-era link; light-time delay, not real-time)
-- Ice-mining rig with a water-ice pile and a feed line to Sabatier
+- Two ice-mining rigs with water-ice piles and feed lines to both Sabatier trains
 - Ice/cargo haul loop: loaded trailers on the road from the mine to a transfer yard, Sabatier ISRU, and the pad
 - Grow vaults for food: the original CO2 greenhouse, a second vault, and a hab-street vault so six ships and HAB 3–5 can eat
 - Visible water loop: ice melt and filter on the mine road, potable tanks at the habs, pipes ice → ISRU and ice → crew
