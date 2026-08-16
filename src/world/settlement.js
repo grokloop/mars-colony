@@ -42,10 +42,12 @@ export function createSettlement() {
   const landmarks = [];
 
   root.add(createLandingPad(0, 0, { finished: true }));
-  const ship = createStarship(0, 0, { name: "starship" });
+  const ship = createStarship(0, 0, { name: "starship", crewHab: true });
   root.add(ship);
   colliders.push({ type: "cyl", x: 0, z: 0, r: 6.2 });
-  landmarks.push({ id: "starship", name: "Pad Starship", position: new THREE.Vector3(0, 18, 0) });
+  colliders.push({ type: "box", x: 0, z: 12.8, w: 3.6, d: 13.6 });
+  landmarks.push({ id: "starship", name: "Crew hab Starship", position: new THREE.Vector3(0, 18, 0) });
+  landmarks.push({ id: "eva", name: "EVA / airlock", position: new THREE.Vector3(2, 3, 12) });
 
   root.add(createLandingPad(52, 24, { finished: false }));
   const cargo = createStarship(52, 24, { name: "cargo-starship", cargoOpen: true });
@@ -101,6 +103,13 @@ export function createSettlement() {
   root.add(habBuild);
   colliders.push({ type: "box", x: -32, z: -98, w: 16, d: 12 });
   landmarks.push({ id: "hab-kit", name: "Hab from cargo", position: new THREE.Vector3(-32, 5, -98) });
+
+  const pressure = createPressureHabs();
+  root.add(pressure);
+  colliders.push({ type: "box", x: -46, z: -108, w: 14, d: 8 });
+  colliders.push({ type: "box", x: -46, z: -94, w: 14, d: 8 });
+  colliders.push({ type: "box", x: -58, z: -102, w: 8, d: 14 });
+  landmarks.push({ id: "pressure", name: "Pressure habs", position: new THREE.Vector3(-50, 5, -100) });
 
   const gh = createGreenhouse();
   root.add(gh);
@@ -160,6 +169,7 @@ export function createSettlement() {
   root.add(createOptimus(-80, -174, 0.8));
   root.add(createOptimus(-34, -92, -1.2));
   root.add(createOptimus(-28, -104, 0.3));
+  root.add(createEvaPresence());
 
   root.add(createRoads());
   root.add(createLights());
@@ -251,6 +261,50 @@ function createStarship(x = 0, z = 0, opts = {}) {
     g.add(mesh(new THREE.CylinderGeometry(0.05, 0.05, 7.2, 6), mats.cable, -12.2, y0 + 16.2, 0));
     g.add(mesh(new THREE.BoxGeometry(1.5, 1.3, 1.5), mats.crate, -12.2, y0 + 12.4, 0));
     g.add(labelPlane("CARGO", "#1a100c", "#f0c089", 3.4, 0.9, -r - 0.1, y0 + 24, 0, -Math.PI / 2));
+  }
+
+  if (opts.crewHab) {
+    const lockY = y0 + 13.0;
+    g.add(mesh(new THREE.CylinderGeometry(1.2, 1.2, 2.7, 14), mats.habDark, 0, lockY, r + 1.35, Math.PI / 2, 0, 0));
+    g.add(mesh(new THREE.TorusGeometry(1.22, 0.09, 6, 16), mats.steel, 0, lockY, r + 0.28));
+    g.add(mesh(new THREE.TorusGeometry(1.22, 0.09, 6, 16), mats.steel, 0, lockY, r + 2.55));
+    g.add(mesh(new THREE.BoxGeometry(1.05, 1.75, 0.1), mats.steelDark, 0, lockY, r + 2.72));
+    g.add(mesh(new THREE.BoxGeometry(3.4, 0.14, 2.6), mats.steelDark, 0, lockY - 1.28, r + 2.9));
+    g.add(mesh(new THREE.BoxGeometry(0.1, 1.15, 2.5), mats.steel, -1.6, lockY - 0.65, r + 2.9));
+    g.add(mesh(new THREE.BoxGeometry(0.1, 1.15, 2.5), mats.steel, 1.6, lockY - 0.65, r + 2.9));
+
+    const yTop = lockY - 1.28;
+    const yBot = getHeight(x, z) + 0.28;
+    const zTop = r + 3.6;
+    const zBot = r + 13.2;
+    const steps = 11;
+    for (let i = 0; i < steps; i++) {
+      const t = i / (steps - 1);
+      g.add(mesh(new THREE.BoxGeometry(2.15, 0.12, 0.95), mats.steelDark, 0, yTop + (yBot - yTop) * t, zTop + (zBot - zTop) * t));
+    }
+    const rampLen = Math.hypot(zTop - zBot, yTop - yBot);
+    const rampAng = Math.atan2(yTop - yBot, zBot - zTop);
+    g.add(mesh(new THREE.BoxGeometry(2.25, 0.08, rampLen), mats.steel, 0, (yTop + yBot) / 2 - 0.12, (zTop + zBot) / 2, rampAng, 0, 0));
+    g.add(mesh(new THREE.BoxGeometry(0.08, 0.85, rampLen), mats.steel, -1.12, (yTop + yBot) / 2 + 0.35, (zTop + zBot) / 2, rampAng, 0, 0));
+    g.add(mesh(new THREE.BoxGeometry(0.08, 0.85, rampLen), mats.steel, 1.12, (yTop + yBot) / 2 + 0.35, (zTop + zBot) / 2, rampAng, 0, 0));
+
+    const vz = zBot + 1.55;
+    const vy = getHeight(x, z) + 1.35;
+    g.add(mesh(new THREE.CylinderGeometry(1.35, 1.35, 2.5, 12), mats.habDark, 0, vy, vz));
+    g.add(mesh(new THREE.BoxGeometry(1.05, 1.7, 0.1), mats.steelDark, 0, vy + 0.05, vz + 1.4));
+    g.add(mesh(new THREE.TorusGeometry(1.38, 0.07, 6, 14), mats.steel, 0, vy + 1.28, vz, Math.PI / 2, 0, 0));
+    g.add(mesh(new THREE.BoxGeometry(2.2, 0.12, 2.2), mats.steelDark, 0, getHeight(x, z) + 0.12, vz));
+
+    for (let i = 0; i < 5; i++) {
+      g.add(mesh(new THREE.BoxGeometry(0.85, 0.48, 0.08), mats.glowWarm, 1.55, y0 + 16.5 + i * 3.4, r + 0.06));
+      g.add(mesh(new THREE.BoxGeometry(0.08, 0.48, 0.85), mats.glowWarm, r + 0.06, y0 + 16.5 + i * 3.4, -1.35));
+    }
+
+    g.add(mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.2, 12), mats.steel, 2.55, y0 + 14.2, r + 0.04, Math.PI / 2, 0, 0));
+    g.add(mesh(new THREE.TorusGeometry(0.52, 0.06, 6, 12), mats.steelDark, 2.55, y0 + 14.2, r + 0.14));
+
+    g.add(labelPlane("CREW HAB", "#1a100c", "#f0c089", 3.4, 0.85, 0, lockY + 2.55, r + 2.35));
+    g.add(labelPlane("AIRLOCK", "#1a100c", "#f0c089", 2.3, 0.55, 1.85, lockY + 0.15, r + 2.05, Math.PI / 2));
   }
 
   return g;
@@ -757,6 +811,145 @@ function createHabAssembly() {
   return g;
 }
 
+function addPressureModule(g, x, z, ry, opts = {}) {
+  const y = getHeight(x, z);
+  const r = opts.r || 2.85;
+  const len = opts.len || 10.4;
+  const bodyY = opts.onStands ? y + 3.4 : y + 3.05;
+  const cx = Math.cos(ry);
+  const sx = Math.sin(ry);
+  if (opts.onStands) {
+    for (const [jx, jz] of [[-4.1, -2.05], [4.1, -2.05], [-4.1, 2.05], [4.1, 2.05]]) {
+      const wx = x + cx * jx - sx * jz;
+      const wz = z + sx * jx + cx * jz;
+      g.add(mesh(new THREE.CylinderGeometry(0.16, 0.26, 1.75, 8), mats.steelDark, wx, y + 0.98, wz));
+      g.add(mesh(new THREE.BoxGeometry(0.7, 0.12, 0.7), mats.steel, wx, y + 0.14, wz));
+      g.add(mesh(new THREE.BoxGeometry(0.52, 0.1, 0.52), mats.steel, wx, y + 1.9, wz));
+    }
+  } else {
+    for (const [jx, jz] of [[-3.6, 0], [3.6, 0]]) {
+      const wx = x + cx * jx - sx * jz;
+      const wz = z + sx * jx + cx * jz;
+      g.add(mesh(new THREE.BoxGeometry(1.6, 0.55, 1.15), mats.steelDark, wx, y + 0.38, wz, 0, ry, 0));
+    }
+  }
+  const body = mesh(new THREE.CylinderGeometry(r, r, len, 16), mats.hab, x, bodyY, z, 0, 0, Math.PI / 2);
+  body.rotation.y = ry;
+  g.add(body);
+  if (!opts.partial) {
+    g.add(mesh(new THREE.SphereGeometry(r, 14, 10), mats.hab, x + cx * (len / 2), bodyY, z + sx * (len / 2)));
+    g.add(mesh(new THREE.SphereGeometry(r, 14, 10), mats.hab, x - cx * (len / 2), bodyY, z - sx * (len / 2)));
+  } else {
+    g.add(mesh(new THREE.SphereGeometry(r, 14, 10), mats.hab, x - cx * (len / 2), bodyY, z - sx * (len / 2)));
+    const ex = x + cx * (len / 2 + 2.3);
+    const ez = z + sx * (len / 2 + 2.3);
+    g.add(mesh(new THREE.SphereGeometry(r, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2), mats.hab, ex, y + 1.45, ez, 0.22, 0.3, 0.1));
+  }
+  for (let i = -2; i <= 2; i++) {
+    const wx = x + cx * i * 1.75;
+    const wz = z + sx * i * 1.75;
+    g.add(mesh(new THREE.BoxGeometry(0.8, 0.55, 0.08), mats.glowWarm, wx - sx * r, bodyY + 0.08, wz + cx * r));
+  }
+  if (opts.airlock) {
+    const px = x - sx * (r + 1.15);
+    const pz = z + cx * (r + 1.15);
+    g.add(mesh(new THREE.CylinderGeometry(1.15, 1.15, 2.2, 12), mats.habDark, px, bodyY, pz, Math.PI / 2, ry, 0));
+    g.add(mesh(new THREE.BoxGeometry(1.0, 1.6, 0.1), mats.steelDark, px - sx * 1.15, bodyY, pz + cx * 1.15, 0, ry, 0));
+    g.add(mesh(new THREE.TorusGeometry(1.18, 0.07, 6, 14), mats.steel, px + sx * 0.2, bodyY, pz - cx * 0.2, 0, ry, 0));
+    g.add(labelPlane("AIRLOCK", "#1a100c", "#f0c089", 2.15, 0.5, px - sx * 0.2, bodyY + 1.45, pz + cx * 0.2, ry));
+  }
+  if (opts.label) {
+    g.add(labelPlane(opts.label, "#1a100c", "#f0c089", 2.7, 0.65, x, bodyY + r + 0.55, z + 0.15, ry));
+  }
+}
+
+function createPressureHabs() {
+  const g = new THREE.Group();
+  g.name = "pressure-habs";
+  const yPad = getHeight(-46, -101);
+  g.add(mesh(new THREE.BoxGeometry(28, 0.2, 22), mats.concrete, -50, yPad + 0.06, -101));
+  addPressureModule(g, -46, -108, 0, { airlock: true, label: "HAB 2" });
+  addPressureModule(g, -46, -94, 0, { onStands: true, airlock: true, label: "HAB KIT" });
+  const ty = getHeight(-46, -101) + 3.15;
+  g.add(mesh(new THREE.CylinderGeometry(1.15, 1.15, 8.2, 12), mats.habDark, -46, ty, -101, Math.PI / 2, 0, 0));
+  g.add(mesh(new THREE.TorusGeometry(1.2, 0.08, 6, 14), mats.steel, -46, ty, -105.1, Math.PI / 2, 0, 0));
+  g.add(mesh(new THREE.TorusGeometry(1.2, 0.08, 6, 14), mats.steel, -46, ty, -96.9, Math.PI / 2, 0, 0));
+  g.add(labelPlane("CONNECT", "#1a100c", "#f0c089", 2.4, 0.5, -46, ty + 1.55, -101));
+  addPressureModule(g, -58, -102, Math.PI / 2, { onStands: true, partial: true, label: "MOD" });
+  addCrate(g, -54.5, -110.2, 0.25);
+  addCrate(g, -52.8, -111.4, -0.3, 1.08);
+  addCrate(g, -61.2, -96.4, 0.4);
+  addCrate(g, -40.6, -90.8, 0.15, 1.05);
+  return g;
+}
+
+function createEvaSuit(x, z, heading) {
+  const g = new THREE.Group();
+  g.name = "eva";
+  const y = getHeight(x, z);
+  g.position.set(x, y, z);
+  g.rotation.y = heading;
+  g.add(mesh(new THREE.BoxGeometry(0.56, 0.8, 0.4), mats.suit, 0, 1.46, 0));
+  g.add(mesh(new THREE.BoxGeometry(0.44, 0.5, 0.24), mats.suitDark, 0, 1.52, -0.3));
+  g.add(mesh(new THREE.SphereGeometry(0.21, 12, 10), mats.suit, 0, 2.04, 0.02));
+  g.add(mesh(new THREE.SphereGeometry(0.165, 10, 8, 0, Math.PI * 2, 0, Math.PI * 0.58), mats.visor, 0, 2.04, 0.1));
+  g.add(mesh(new THREE.BoxGeometry(0.17, 0.6, 0.17), mats.suit, -0.4, 1.36, 0.04));
+  g.add(mesh(new THREE.BoxGeometry(0.17, 0.6, 0.17), mats.suit, 0.4, 1.36, 0.04));
+  g.add(mesh(new THREE.BoxGeometry(0.2, 0.76, 0.2), mats.suitDark, -0.15, 0.7, 0));
+  g.add(mesh(new THREE.BoxGeometry(0.2, 0.76, 0.2), mats.suitDark, 0.15, 0.7, 0));
+  return g;
+}
+
+function addToolCart(g, x, z, heading) {
+  const y = getHeight(x, z);
+  const cart = new THREE.Group();
+  cart.position.set(x, y, z);
+  cart.rotation.y = heading;
+  cart.add(mesh(new THREE.BoxGeometry(1.2, 0.18, 0.72), mats.steelDark, 0, 0.62, 0));
+  cart.add(mesh(new THREE.BoxGeometry(1.15, 0.28, 0.68), mats.crate, 0, 0.86, 0));
+  cart.add(mesh(new THREE.BoxGeometry(0.08, 0.55, 0.08), mats.steel, -0.48, 0.32, 0.26));
+  cart.add(mesh(new THREE.BoxGeometry(0.08, 0.55, 0.08), mats.steel, 0.48, 0.32, 0.26));
+  cart.add(mesh(new THREE.BoxGeometry(0.08, 0.55, 0.08), mats.steel, -0.48, 0.32, -0.26));
+  cart.add(mesh(new THREE.BoxGeometry(0.08, 0.55, 0.08), mats.steel, 0.48, 0.32, -0.26));
+  const wheel = new THREE.CylinderGeometry(0.12, 0.12, 0.1, 10);
+  cart.add(mesh(wheel, mats.roverDark, -0.48, 0.12, 0.3, Math.PI / 2, 0, 0));
+  cart.add(mesh(wheel, mats.roverDark, 0.48, 0.12, 0.3, Math.PI / 2, 0, 0));
+  cart.add(mesh(wheel, mats.roverDark, -0.48, 0.12, -0.3, Math.PI / 2, 0, 0));
+  cart.add(mesh(wheel, mats.roverDark, 0.48, 0.12, -0.3, Math.PI / 2, 0, 0));
+  cart.add(mesh(new THREE.BoxGeometry(0.06, 0.7, 0.06), mats.steel, -0.22, 1.3, 0.08));
+  cart.add(mesh(new THREE.BoxGeometry(0.06, 0.55, 0.06), mats.steel, 0.18, 1.22, -0.06));
+  cart.add(mesh(new THREE.BoxGeometry(0.22, 0.12, 0.12), mats.steelDark, -0.22, 1.68, 0.08));
+  g.add(cart);
+}
+
+function addSuitport(g, x, z, heading) {
+  const y = getHeight(x, z);
+  const port = new THREE.Group();
+  port.position.set(x, y, z);
+  port.rotation.y = heading;
+  port.add(mesh(new THREE.BoxGeometry(0.85, 2.45, 0.32), mats.steelDark, 0, 1.32, 0));
+  port.add(mesh(new THREE.TorusGeometry(0.42, 0.07, 8, 14), mats.steel, 0, 1.58, 0.22));
+  port.add(mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.1, 12), mats.habDark, 0, 1.58, 0.18, Math.PI / 2, 0, 0));
+  port.add(mesh(new THREE.BoxGeometry(0.7, 0.16, 0.55), mats.steel, 0, 0.12, 0.05));
+  g.add(port);
+}
+
+function createEvaPresence() {
+  const g = new THREE.Group();
+  g.name = "eva-presence";
+  g.add(createEvaSuit(2.4, 12.2, headingToward(2.4, 12.2, 0, 7)));
+  g.add(createEvaSuit(-2.2, 11.5, headingToward(-2.2, 11.5, 0, 7)));
+  g.add(createEvaSuit(3.8, 15.6, 0.35));
+  g.add(createEvaSuit(0.6, 18.2, Math.PI));
+  addToolCart(g, 4.3, 14.8, 0.4);
+  addSuitport(g, -3.9, 9.1, 0.2);
+  addCrate(g, 5.4, 13.2, 0.2, 0.85);
+  const y = getHeight(5.1, 16.4);
+  g.add(mesh(new THREE.BoxGeometry(0.1, 2.2, 0.1), mats.steelDark, 5.1, y + 1.1, 16.4));
+  g.add(labelPlane("EVA PREP", "#1a100c", "#f0c089", 2.3, 0.55, 5.1, y + 2.45, 16.4, -0.35));
+  return g;
+}
+
 function createSurvey() {
   const g = new THREE.Group();
   g.name = "survey";
@@ -934,9 +1127,10 @@ function createRoads() {
     [-58, -158, -64, -90, 4.2],
     [-64, -90, -68, -16, 4.2],
     [-18, -138, -32, -148, 3.2],
+    [-32, -98, -46, -100, 3.4],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -946,6 +1140,7 @@ function createRoads() {
     [96, -58], [104, -72],
     [28, 50], [32, 62], [-12, 30], [-20, 40],
     [-60, -130], [-66, -70], [-66, -40], [-26, -144],
+    [-40, -100], [-52, -108], [3.4, 12], [-3.2, 12],
   ];
   for (const [sx, sz] of stakes) addStake(g, sx, sz, mats.flagDeposit);
   return g;
@@ -959,6 +1154,7 @@ function createLights() {
     [-80, -176], [-96, -196], [-28, -90], [112, -80], [100, -50],
     [0, -40], [22, -112], [32, -112], [70, -40], [84, -44],
     [36, 60], [-24, 32], [-64, -90], [-40, -148], [-32, -156],
+    [4, 14], [-46, -108], [-46, -92], [-58, -102],
   ];
   for (const [x, z] of poles) {
     const y = getHeight(x, z);

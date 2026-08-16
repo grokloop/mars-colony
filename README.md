@@ -33,13 +33,13 @@ Spawn is on the landing pad berm, looking at the Starships.
 
 ## Day-one landmarks
 
-- Four uncrewed cargo Starships this synodic window: pad ship plus three cargo landings (two unloading)
-- Pad Starship on landing legs (stainless, flaps, nose, heat-shield tiles, Raptor bells)
+- Four Starships this synodic window: pad ship now the crew hab, plus three cargo landings (two unloading)
+- Pad Starship fitted as the first crew hab: side airlock, access stairs, ground vestibule, CREW HAB / AIRLOCK labels, occupied deck lights
 - Cargo Starships on prepared pads and near landing-prep, hatches/ramps and crates being offloaded
 - Prepared landing surfaces: graded pads, blast berms, approach markers, and a third pad still being prepped
 - Solar farm east of the pad (expanded rows plus a second field), with power lines to the Sabatier plant
 - Sabatier ISRU west: CO2 intake, ice/water feed, CH4 and O2 tanks
-- Hab cluster north along the road, plus hab modules being assembled from cargo kits
+- Hab cluster north along the road, hab modules being assembled from cargo kits, plus more cargo-derived pressure habs (horizontal cyls, airlocks, modules on stands being connected)
 - CO2 greenhouse / life support: Mars atmosphere intake and compressor, plant rows in compressed CO2, small O2 tank
 - Pad is the spaceport: methalox transfer lines from Sabatier, CH4/O2 load stand, return-propellant labels
 - Resource survey on the ice-rich northern plain: stakes, sample caches, ice/water and deposit flags, survey rover tracks
@@ -47,6 +47,7 @@ Spawn is on the landing pad berm, looking at the Starships.
 - Comms tower plus a large Earth-pointing dish (DSN / Starship-era link; light-time delay, not real-time)
 - Ice-mining rig with a water-ice pile and a feed line to Sabatier
 - Ice/cargo haul loop: loaded trailers on the road from the mine to a transfer yard, Sabatier ISRU, and the pad
+- Small EVA/crew presence at the pad airlock: suited figures, tool cart, suitport
 - Optimus-class robots on cargo offload, landing prep, survey, and hab assembly
 - Graded/packed-regolith roads and plank paths linking pad, cargo, ISRU, habs, greenhouse, survey, and both solar fields
 
