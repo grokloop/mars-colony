@@ -96,6 +96,14 @@ export function createSettlement() {
   landmarks.push({ id: "pad2", name: "Next-window pad", position: new THREE.Vector3(-16, 6, 136) });
   landmarks.push({ id: "sinter", name: "Pad sinter rig", position: new THREE.Vector3(-38, 4, 148) });
 
+  const beacons = createLandingBeacons();
+  root.add(beacons);
+  colliders.push({ type: "box", x: 6, z: 148, w: 6, d: 5 });
+  for (const [bx, bz] of [[2, 154], [-34, 154], [2, 118], [-34, 118]]) {
+    colliders.push({ type: "cyl", x: bx, z: bz, r: 0.55 });
+  }
+  landmarks.push({ id: "beacons", name: "Pad 2 landing beacons", position: new THREE.Vector3(6, 5, 148) });
+
   const solar = createSolarFarm();
   root.add(solar);
   landmarks.push({ id: "solar", name: "Solar farm", position: new THREE.Vector3(82, 6, -44) });
@@ -1449,9 +1457,10 @@ function createRoads() {
     [22, -112, 38, -104, 3.2],
     [10, -124, 24, -128, 3.0],
     [-68, 12, -80, 20, 3.2],
+    [-16, 136, 6, 148, 3.0],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4], [-96, 4, 3.4], [142, -62, 3.4], [28, -140, 3.4], [-90, -148, 3.4], [12, 18, 3.2], [36, 8, 3.4], [36, -6, 3.4], [-50, 4, 3.4], [-58, -142, 3.4], [-32, -22, 3.4], [66, -90, 3.4], [22, -98, 3.4], [172, -48, 3.4], [38, -104, 3.4], [24, -128, 3.2], [-80, 20, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4], [-96, 4, 3.4], [142, -62, 3.4], [28, -140, 3.4], [-90, -148, 3.4], [12, 18, 3.2], [36, 8, 3.4], [36, -6, 3.4], [-50, 4, 3.4], [-58, -142, 3.4], [-32, -22, 3.4], [66, -90, 3.4], [22, -98, 3.4], [172, -48, 3.4], [38, -104, 3.4], [24, -128, 3.2], [-80, 20, 3.4], [6, 148, 3.2]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2713,5 +2722,25 @@ function createCh4Chiller() {
   g.add(labelPlane("CHILLER", "#1a100c", "#d6b48a", 2.8, 0.4, x, y + 3.6, z + 3.7));
   addPipeRun(g, [[-76, -10], [-80, 6], [-80, 20]], mats.tankCh4, 0.11);
   addPipeRun(g, [[-68, 12], [-74, 16], [-80, 20]], mats.pipe, 0.09);
+  return g;
+}
+
+function createLandingBeacons() {
+  const g = new THREE.Group();
+  g.name = "pad2-beacons";
+  const poles = [[2, 154], [-34, 154], [2, 118], [-34, 118]];
+  for (const [x, z] of poles) {
+    const y = getHeight(x, z);
+    g.add(mesh(new THREE.CylinderGeometry(0.14, 0.18, 5.6, 8), mats.steelDark, x, y + 2.9, z));
+    g.add(mesh(new THREE.BoxGeometry(0.55, 0.55, 0.55), mats.glowPad, x, y + 5.85, z));
+    g.add(mesh(new THREE.BoxGeometry(0.22, 0.9, 0.22), mats.steel, x, y + 6.4, z));
+  }
+  const x = 6;
+  const z = 148;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(5.4, 0.16, 4.2), mats.concrete, x, y + 0.08, z));
+  g.add(mesh(new THREE.BoxGeometry(2.6, 1.6, 1.8), mats.habDark, x, y + 1.0, z));
+  g.add(labelPlane("PAD 2", "#1a100c", "#f0c089", 2.2, 0.42, x, y + 2.35, z + 2.2));
+  g.add(labelPlane("BEACONS", "#1a100c", "#d6b48a", 2.6, 0.38, x, y + 1.88, z + 2.2));
   return g;
 }
