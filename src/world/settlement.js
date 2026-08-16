@@ -53,6 +53,19 @@ export function createSettlement() {
   colliders.push({ type: "cyl", x: 52, z: 24, r: 6.2 });
   landmarks.push({ id: "cargo", name: "Cargo Starship", position: new THREE.Vector3(52, 18, 24) });
 
+  root.add(createLandingPad(36, 72, { finished: false }));
+  const cargo3 = createStarship(36, 72, { name: "cargo-3", cargoOpen: true });
+  root.add(cargo3);
+  colliders.push({ type: "cyl", x: 36, z: 72, r: 6.2 });
+  landmarks.push({ id: "cargo3", name: "Cargo Starship 3", position: new THREE.Vector3(36, 18, 72) });
+  root.add(createWindowOffload(24, 70));
+
+  root.add(createLandingPad(-24, 44, { finished: false }));
+  const cargo4 = createStarship(-24, 44, { name: "cargo-4" });
+  root.add(cargo4);
+  colliders.push({ type: "cyl", x: -24, z: 44, r: 6.2 });
+  landmarks.push({ id: "cargo4", name: "Cargo Starship 4", position: new THREE.Vector3(-24, 18, 44) });
+
   root.add(createCrates());
   root.add(createCargoOffload());
   root.add(createApproachMarkers());
@@ -108,6 +121,11 @@ export function createSettlement() {
   root.add(createRover(-94, -182, 0.7));
   landmarks.push({ id: "rover", name: "Haul rover", position: new THREE.Vector3(8, 2, -62) });
 
+  const haul = createHaulLoop();
+  root.add(haul);
+  colliders.push({ type: "box", x: -64, z: -90, w: 10, d: 8 });
+  landmarks.push({ id: "haul", name: "Ice haul", position: new THREE.Vector3(-64, 3, -90) });
+
   const shop = createWorkshop();
   root.add(shop);
   colliders.push({ type: "box", x: 48, z: -86, w: 16, d: 12 });
@@ -117,6 +135,12 @@ export function createSettlement() {
   root.add(tower);
   colliders.push({ type: "cyl", x: -18, z: -138, r: 3 });
   landmarks.push({ id: "comms", name: "Comms tower", position: new THREE.Vector3(-18, 16, -138) });
+
+  const earth = createEarthDish();
+  root.add(earth);
+  colliders.push({ type: "cyl", x: -32, z: -148, r: 8.4 });
+  colliders.push({ type: "box", x: -40, z: -154, w: 6, d: 5 });
+  landmarks.push({ id: "earth", name: "Earth dish · 12 min delay", position: new THREE.Vector3(-32, 12, -148) });
 
   const mine = createIceMine();
   root.add(mine);
@@ -131,6 +155,8 @@ export function createSettlement() {
   root.add(createOptimus(42, 22, 0.6));
   root.add(createOptimus(39, 26, -0.4));
   root.add(createOptimus(26, 78, 2.2));
+  root.add(createOptimus(26, 68, 0.5));
+  root.add(createOptimus(22, 72, -0.8));
   root.add(createOptimus(-80, -174, 0.8));
   root.add(createOptimus(-34, -92, -1.2));
   root.add(createOptimus(-28, -104, 0.3));
@@ -266,6 +292,8 @@ function createApproachMarkers() {
   const runs = [
     { fx: 0, fz: 118, tx: 0, tz: 32, n: 7 },
     { fx: 52, fz: 90, tx: 52, tz: 42, n: 5 },
+    { fx: 36, fz: 128, tx: 36, tz: 90, n: 4 },
+    { fx: -24, fz: 92, tx: -24, tz: 60, n: 4 },
   ];
   for (const run of runs) {
     const ang = Math.atan2(run.tx - run.fx, run.tz - run.fz);
@@ -901,9 +929,14 @@ function createRoads() {
     [22, -112, 48, -86, 3.4],
     [-6, -116, -18, -138, 3.2],
     [0, 8, -15, -8, 3.4],
+    [16, 28, 36, 72, 3.8],
+    [0, 18, -24, 44, 3.8],
+    [-58, -158, -64, -90, 4.2],
+    [-64, -90, -68, -16, 4.2],
+    [-18, -138, -32, -148, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -911,6 +944,8 @@ function createRoads() {
     [22, -40], [42, -40], [64, -41], [-22, -32], [-44, -24],
     [8, -110], [16, -111], [-8, -130], [-28, -148], [-70, -172],
     [96, -58], [104, -72],
+    [28, 50], [32, 62], [-12, 30], [-20, 40],
+    [-60, -130], [-66, -70], [-66, -40], [-26, -144],
   ];
   for (const [sx, sz] of stakes) addStake(g, sx, sz, mats.flagDeposit);
   return g;
@@ -923,6 +958,7 @@ function createLights() {
     [40, 18], [58, 32], [16, 70], [28, 88], [-54, -8],
     [-80, -176], [-96, -196], [-28, -90], [112, -80], [100, -50],
     [0, -40], [22, -112], [32, -112], [70, -40], [84, -44],
+    [36, 60], [-24, 32], [-64, -90], [-40, -148], [-32, -156],
   ];
   for (const [x, z] of poles) {
     const y = getHeight(x, z);
@@ -945,5 +981,175 @@ function createSign() {
   const site = labelPlane("ARCADIA PLANITIA", "#1a100c", "#d6b48a", 3.2, 0.55, 18, getHeight(18, 26) + 2.15, 26, 0.15);
   g.add(mesh(new THREE.BoxGeometry(0.1, 2.2, 0.1), mats.steelDark, 18, getHeight(18, 26) + 1.1, 26));
   g.add(site);
+  const wx = 20;
+  const wz = 36;
+  const wy = getHeight(wx, wz);
+  g.add(mesh(new THREE.BoxGeometry(0.1, 2.6, 0.1), mats.steelDark, wx, wy + 1.3, wz));
+  g.add(labelPlane("4 SHIPS", "#1a100c", "#f0c089", 2.6, 0.65, wx, wy + 3.15, wz, 0.25));
+  g.add(labelPlane("THIS WINDOW", "#1a100c", "#d6b48a", 2.8, 0.5, wx, wy + 2.45, wz, 0.25));
   return g;
 }
+
+function headingToward(x, z, tx, tz) {
+  return Math.atan2(-(tz - z), tx - x);
+}
+
+function createWindowOffload(x, z) {
+  const g = new THREE.Group();
+  g.name = "window-offload";
+  const spots = [
+    [x, z, 0.2], [x - 1.8, z + 2.1, -0.3], [x + 1.6, z + 2.4, 0.7],
+    [x - 2.4, z - 1.2, 0.15], [x + 0.8, z - 2.2, 1.1], [x - 3.2, z + 0.6, -0.4],
+  ];
+  for (const [sx, sz, rot] of spots) addCrate(g, sx, sz, rot);
+  addCrate(g, x - 4.2, z + 1.4, 0.2, 1.12);
+  addCrate(g, x - 5.4, z - 0.6, -0.15, 1.05);
+  const [px, py, pz] = sit(x - 1.2, z, 0.08);
+  g.add(mesh(new THREE.BoxGeometry(7.2, 0.12, 3.8), mats.steelDark, px, py, pz, 0, 0.12, 0));
+  g.add(labelPlane("CARGO", "#1a100c", "#f0c089", 2.4, 0.65, x - 4.2, getHeight(x - 4.2, z + 1.4) + 2.4, z + 1.4, 0.4));
+  return g;
+}
+
+function createEarthDish() {
+  const g = new THREE.Group();
+  g.name = "earth-dish";
+  const x = -32;
+  const z = -148;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.CylinderGeometry(8.6, 8.6, 0.28, 32), mats.concrete, x, y + 0.1, z));
+  g.add(mesh(new THREE.CylinderGeometry(1.45, 1.85, 5.4, 14), mats.steelDark, x, y + 2.8, z));
+  g.add(mesh(new THREE.CylinderGeometry(2.05, 2.05, 0.42, 18), mats.steel, x, y + 5.55, z));
+  g.add(mesh(new THREE.TorusGeometry(2.15, 0.12, 8, 20), mats.lattice, x, y + 5.8, z, Math.PI / 2, 0, 0));
+  g.add(mesh(new THREE.BoxGeometry(0.32, 4.4, 0.32), mats.lattice, x - 2.55, y + 7.6, z));
+  g.add(mesh(new THREE.BoxGeometry(0.32, 4.4, 0.32), mats.lattice, x + 2.55, y + 7.6, z));
+  g.add(mesh(new THREE.BoxGeometry(5.6, 0.32, 0.32), mats.lattice, x, y + 9.75, z));
+
+  const mount = new THREE.Group();
+  mount.position.set(x, y + 9.5, z);
+  mount.rotation.set(-0.92, 0.68, 0);
+  const bowl = mesh(new THREE.SphereGeometry(7.6, 28, 16, 0, Math.PI * 2, 0, Math.PI / 2.28), mats.dish, 0, 0, 0);
+  mount.add(bowl);
+  const back = mesh(new THREE.SphereGeometry(7.72, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2.45), mats.steelDark, 0, -0.12, 0);
+  mount.add(back);
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2;
+    mount.add(mesh(new THREE.BoxGeometry(0.07, 0.07, 7.4), mats.steelDark, 0, 0.18, 0, 0.12, a, 0));
+  }
+  mount.add(mesh(new THREE.CylinderGeometry(0.07, 0.07, 5.4, 6), mats.steelDark, 0, 2.7, 0));
+  mount.add(mesh(new THREE.CylinderGeometry(0.38, 0.2, 0.75, 10), mats.steel, 0, 5.35, 0));
+  g.add(mount);
+
+  const sx = x - 8.2;
+  const sz = z - 5.6;
+  const sy = getHeight(sx, sz);
+  g.add(mesh(new THREE.BoxGeometry(4.6, 2.5, 3.4), mats.habDark, sx, sy + 1.35, sz));
+  g.add(mesh(new THREE.BoxGeometry(2.2, 0.85, 1.4), mats.steelDark, sx + 2.8, sy + 0.55, sz + 0.4));
+  g.add(labelPlane("EARTH LINK", "#1a100c", "#f0c089", 3.6, 0.75, x, y + 4.2, z + 6.4));
+  g.add(labelPlane("LIGHT TIME 12 MIN", "#1a100c", "#d6b48a", 3.9, 0.6, x, y + 3.4, z + 6.4));
+  g.add(labelPlane("NOT REAL-TIME", "#1a100c", "#d6b48a", 3.3, 0.5, sx, sy + 2.85, sz + 1.85));
+  g.add(mesh(new THREE.BoxGeometry(0.1, 2.8, 0.1), mats.steelDark, x + 6.6, y + 1.4, z + 5.2));
+  g.add(labelPlane("DSN / STARSHIP", "#1a100c", "#f0c089", 3.2, 0.55, x + 6.6, y + 3.15, z + 5.2, -0.5));
+  return g;
+}
+
+function createHaulRover(x, z, heading, opts = {}) {
+  const g = new THREE.Group();
+  g.name = opts.kind === "cargo" ? "cargo-haul" : "ice-haul";
+  const y = getHeight(x, z);
+  g.position.set(x, y, z);
+  g.rotation.y = heading;
+  g.add(mesh(new THREE.BoxGeometry(4.2, 1.25, 2.2), mats.rover, 0.2, 1.45, 0));
+  g.add(mesh(new THREE.BoxGeometry(1.55, 0.85, 1.7), mats.roverDark, 1.55, 2.25, 0));
+  g.add(mesh(new THREE.BoxGeometry(2.5, 0.08, 1.7), mats.solar, 0.05, 2.16, 0));
+  g.add(mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.6, 6), mats.steel, 1.2, 2.95, 0));
+  g.add(mesh(new THREE.BoxGeometry(1.15, 0.2, 0.32), mats.steelDark, -2.45, 1.02, 0));
+  const wheel = new THREE.CylinderGeometry(0.62, 0.62, 0.38, 12);
+  const spots = [[-1.35, 0.62, 1.22], [0.25, 0.62, 1.22], [1.55, 0.62, 1.22], [-1.35, 0.62, -1.22], [0.25, 0.62, -1.22], [1.55, 0.62, -1.22]];
+  for (const [wx, wy, wz] of spots) {
+    g.add(mesh(wheel, mats.roverDark, wx, wy, wz, Math.PI / 2, 0, 0));
+  }
+  const tx = -5.7;
+  g.add(mesh(new THREE.BoxGeometry(4.5, 0.22, 2.4), mats.steelDark, tx, 1.02, 0));
+  const tw = [[-4.5, 0.52, 1.22], [-6.7, 0.52, 1.22], [-4.5, 0.52, -1.22], [-6.7, 0.52, -1.22]];
+  for (const [wx, wy, wz] of tw) {
+    g.add(mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.32, 12), mats.roverDark, wx, wy, wz, Math.PI / 2, 0, 0));
+  }
+  if (opts.kind === "cargo") {
+    g.add(mesh(new THREE.BoxGeometry(1.55, 1.2, 1.55), mats.crate, tx - 0.95, 1.78, 0.12));
+    g.add(mesh(new THREE.BoxGeometry(1.55, 1.2, 1.55), mats.crate, tx + 0.9, 1.78, -0.08));
+    if (opts.loaded !== false) {
+      g.add(mesh(new THREE.BoxGeometry(1.35, 1.05, 1.35), mats.crate, tx, 2.9, 0.05));
+    }
+    g.add(labelPlane("CARGO", "#1a100c", "#f0c089", 1.7, 0.42, tx, 2.05, 1.28));
+  } else {
+    g.add(mesh(new THREE.BoxGeometry(4.2, 1.15, 0.1), mats.steel, tx, 1.68, 1.12));
+    g.add(mesh(new THREE.BoxGeometry(4.2, 1.15, 0.1), mats.steel, tx, 1.68, -1.12));
+    g.add(mesh(new THREE.BoxGeometry(0.1, 1.15, 2.25), mats.steel, tx - 2.15, 1.68, 0));
+    g.add(mesh(new THREE.BoxGeometry(0.1, 1.15, 2.25), mats.steel, tx + 2.15, 1.68, 0));
+    if (opts.loaded !== false) {
+      const ice = mesh(new THREE.DodecahedronGeometry(1.15, 0), mats.ice, tx, 1.82, 0);
+      ice.scale.set(1.65, 0.68, 0.95);
+      g.add(ice);
+      g.add(mesh(new THREE.DodecahedronGeometry(0.52, 0), mats.ice, tx + 0.95, 1.92, 0.22));
+      g.add(mesh(new THREE.DodecahedronGeometry(0.4, 0), mats.ice, tx - 0.85, 1.88, -0.18));
+    }
+    g.add(labelPlane("ICE", "#1a2830", "#d6e6ef", 1.35, 0.38, tx, 2.35, 1.24));
+  }
+  return g;
+}
+
+function addHaulTracks(g, ax, az, bx, bz, steps = 16) {
+  const ang = Math.atan2(bx - ax, bz - az);
+  for (let i = 0; i < steps; i++) {
+    const t = i / (steps - 1);
+    const x = ax + (bx - ax) * t;
+    const z = az + (bz - az) * t;
+    const y = getHeight(x, z);
+    for (const side of [-0.7, 0.7]) {
+      const ox = Math.cos(ang) * side;
+      const oz = -Math.sin(ang) * side;
+      const mark = mesh(new THREE.BoxGeometry(0.4, 0.05, 0.9), mats.track, x + ox, y + 0.04, z + oz, 0, ang, 0);
+      mark.castShadow = false;
+      g.add(mark);
+    }
+  }
+}
+
+function createHaulLoop() {
+  const g = new THREE.Group();
+  g.name = "haul-loop";
+  const x = -64;
+  const z = -90;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(11, 0.2, 8.4), mats.concrete, x, y + 0.08, z));
+  g.add(mesh(new THREE.BoxGeometry(2.6, 3.2, 2.6), mats.steelDark, x + 2.4, y + 1.75, z - 1.4));
+  g.add(mesh(new THREE.BoxGeometry(3.4, 0.18, 1.3), mats.steel, x + 0.2, y + 2.35, z - 1.4, 0, 0, 0.18));
+  const pile = mesh(new THREE.DodecahedronGeometry(2.4, 0), mats.ice, x - 2.6, y + 1.15, z + 1.6);
+  pile.scale.set(1.35, 0.7, 1.15);
+  g.add(pile);
+  g.add(mesh(new THREE.DodecahedronGeometry(1.1, 0), mats.ice, x - 1.2, y + 0.85, z + 2.4));
+  g.add(mesh(new THREE.BoxGeometry(0.22, 5.6, 0.22), mats.lattice, x + 3.6, y + 2.9, z + 2.2));
+  g.add(mesh(new THREE.BoxGeometry(0.22, 4.2, 0.22), mats.lattice, x + 3.6, y + 4.4, z + 0.4, 0.7, 0, 0));
+  g.add(mesh(new THREE.BoxGeometry(1.6, 0.7, 0.7), mats.steelDark, x + 3.6, y + 5.5, z - 0.6));
+  g.add(labelPlane("ICE TRANSFER", "#1a2830", "#d6e6ef", 3.5, 0.7, x, y + 3.7, z + 3.4));
+  g.add(labelPlane("MINE TO ISRU", "#1a100c", "#f0c089", 3.1, 0.5, x, y + 2.95, z + 3.4));
+
+  const mine = { x: -58, z: -158 };
+  const isru = { x: -68, z: -16 };
+  const pad = { x: 0, z: 0 };
+  g.add(createHaulRover(-55, -146, headingToward(-55, -146, isru.x, isru.z), { kind: "ice", loaded: true }));
+  g.add(createHaulRover(-61, -118, headingToward(-61, -118, isru.x, isru.z), { kind: "ice", loaded: true }));
+  g.add(createHaulRover(-66, -78, headingToward(-66, -78, isru.x, isru.z), { kind: "ice", loaded: true }));
+  g.add(createHaulRover(-68, -38, headingToward(-68, -38, isru.x, isru.z), { kind: "ice", loaded: true }));
+  g.add(createHaulRover(-70, -62, headingToward(-70, -62, mine.x, mine.z), { kind: "ice", loaded: false }));
+  g.add(createHaulRover(-50, -24, headingToward(-50, -24, pad.x, pad.z), { kind: "cargo", loaded: true }));
+  g.add(createHaulRover(-18, -14, headingToward(-18, -14, 12, 8), { kind: "cargo", loaded: true }));
+  g.add(createHaulRover(22, 12, headingToward(22, 12, 50, 22), { kind: "cargo", loaded: true }));
+
+  addHaulTracks(g, -58, -156, -64, -92, 18);
+  addHaulTracks(g, -64, -88, -68, -20, 16);
+  addHaulTracks(g, -66, -18, -16, -10, 12);
+  addHaulTracks(g, -14, -8, 20, 12, 10);
+  return g;
+}
+

@@ -34,6 +34,7 @@ export const mats = {
   roadBed: new THREE.MeshStandardMaterial({ color: 0x5c3a2a, roughness: 0.97, metalness: 0.02 }),
   soil: new THREE.MeshStandardMaterial({ color: 0x4a2e1c, roughness: 0.96 }),
   plantLeaf: new THREE.MeshStandardMaterial({ color: 0x2f6a32, roughness: 0.88 }),
+  dish: new THREE.MeshStandardMaterial({ color: 0xd8d4cc, metalness: 0.38, roughness: 0.42 }),
 };
 
 export function makeLabelTexture(text, bg = "#1c120c", fg = "#f3e2cc") {
