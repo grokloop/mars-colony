@@ -101,6 +101,11 @@ export function createSettlement() {
   root.add(solar3);
   landmarks.push({ id: "solar3", name: "Solar field 3", position: new THREE.Vector3(135, 5, -40) });
 
+  const solar4 = createSolarField4();
+  root.add(solar4);
+  colliders.push({ type: "box", x: 158, z: -28, w: 12, d: 8 });
+  landmarks.push({ id: "solar4", name: "Solar field 4", position: new THREE.Vector3(158, 5, -62) });
+
   root.add(createPowerRun());
   root.add(createSolarTie());
 
@@ -1246,9 +1251,10 @@ function createRoads() {
     [0, 8, 20, 8, 3.4],
     [22, 82, -16, 136, 3.6],
     [0, 32, -16, 136, 3.4],
+    [135, -40, 158, -62, 3.4],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -1620,6 +1626,8 @@ function addPropColliders(colliders) {
   box(96, -72, 3, 2.2);
   for (let j = 0; j < 5; j++) box(135.5, -28 - j * 6.2, 30, 2.6);
   box(120, -26, 3, 2.2);
+  for (let j = 0; j < 5; j++) box(158.5, -48 - j * 6.2, 30, 2.6);
+  box(146, -46, 3, 2.2);
 
   box(14, 22, 2.4, 1.6);
   box(18, 26, 1.8, 1.3);
@@ -1901,5 +1909,36 @@ function createNextWindowPad() {
   g.add(labelPlane("PAD 2", "#1a100c", "#f0c089", 2.4, 0.55, x, y + 0.55, z + 22.4));
   addCrate(g, -32, 124, 0.2, 0.9);
   addCrate(g, -30.6, 126.4, -0.25, 0.95);
+  return g;
+}
+
+function createSolarField4() {
+  const g = new THREE.Group();
+  g.name = "solar-4";
+  const cols = 6;
+  const rows = 5;
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      const x = 145 + i * 5.4;
+      const z = -48 - j * 6.2;
+      const y = getHeight(x, z);
+      g.add(mesh(new THREE.BoxGeometry(0.18, 1.6, 0.18), mats.solarFrame, x, y + 0.8, z));
+      g.add(mesh(new THREE.BoxGeometry(4.6, 0.08, 2.3), mats.solar, x, y + 1.55, z, -0.55, 0.15, 0));
+      g.add(mesh(new THREE.BoxGeometry(4.75, 0.05, 2.42), mats.solarFrame, x, y + 1.5, z, -0.55, 0.15, 0));
+    }
+  }
+  const [ix, iy, iz] = sit(146, -46, 0.7);
+  g.add(mesh(new THREE.BoxGeometry(2.2, 1.4, 1.4), mats.habDark, ix, iy, iz));
+  g.add(labelPlane("POWER", "#111111", "#f4e6c8", 2.0, 0.55, ix, iy + 0.2, iz + 0.75));
+  g.add(labelPlane("FIELD 4", "#111111", "#d6b48a", 2.2, 0.45, ix, iy + 0.85, iz + 0.75));
+  const bx = 158;
+  const bz = -28;
+  const by = getHeight(bx, bz);
+  g.add(mesh(new THREE.BoxGeometry(12, 0.2, 7.2), mats.concrete, bx, by + 0.1, bz));
+  for (let i = 0; i < 5; i++) {
+    g.add(mesh(new THREE.BoxGeometry(1.7, 2.0, 4.2), mats.battery, bx - 4 + i * 2.0, by + 1.2, bz));
+  }
+  g.add(labelPlane("NIGHT", "#111111", "#f4e6c8", 2.2, 0.5, bx, by + 2.7, bz + 3.6));
+  g.add(labelPlane("FIELD 4", "#111111", "#d6b48a", 2.4, 0.42, bx, by + 2.15, bz + 3.6));
   return g;
 }
