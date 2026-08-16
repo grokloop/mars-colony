@@ -29,7 +29,7 @@ Stay on the Musk / SpaceX spine: Starship as the truck, uncrewed cargo first, so
 
 Keep geometry modest. Instancing and simple PBR materials beat huge textures. Aim for about 60fps on a laptop.
 
-Walk your change at /. Check the tour at /preview.html. Run a production build before you open a PR.
+Walk your change at /walk.html. Check the tour at /preview.html. Confirm the public landing at /. Run a production build before you open a PR.
 
 One idea per PR when you can. Screenshots help. MIT: by contributing you license your work the same way.
 

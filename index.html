@@ -3,20 +3,140 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mars Colony — Walk</title>
+    <title>Mars Colony — Base Alpha</title>
+    <meta name="description" content="A living first-settlement on Mars. Walk Base Alpha on Arcadia Planitia, or watch the live world preview. Open source. MIT." />
     <link rel="stylesheet" href="/src/style.css" />
   </head>
-  <body>
-    <div id="app"></div>
-    <div id="hud">
-      <div id="crosshair"></div>
-      <div id="hint" class="panel">
-        <p class="title">Base Alpha · Arcadia Planitia</p>
-        <p>Click to walk the empty next-window landing pad.</p>
-        <p class="keys">WASD move · mouse look · Shift run · Space jump · Esc release</p>
-      </div>
-      <div id="place" class="panel hidden">Landing pad</div>
-    </div>
-    <script type="module" src="/src/main.js"></script>
+  <body class="site">
+    <div class="site-sky" aria-hidden="true"></div>
+    <header class="site-bar">
+      <a class="site-mark" href="./">Mars Colony</a>
+      <nav class="site-nav">
+        <a href="./preview.html">Live preview</a>
+        <a href="./walk.html">Walk</a>
+        <a href="https://github.com/grokloop/mars-colony">GitHub</a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero">
+        <p class="kicker">Base Alpha · Arcadia Planitia</p>
+        <h1>A living Mars settlement.</h1>
+        <p class="lede">
+          Not a game. No scores, quests, or win state. This is a public,
+          walkable first-outpost that follows the Musk / SpaceX civilize-Mars
+          plan — and it grows as people send pull requests.
+        </p>
+        <p class="lede">
+          Starship is the truck. Uncrewed cargo lands first, proves it lands
+          intact, and delivers surface systems. First human jobs are survey,
+          prepare landing surfaces, set up solar power, and build habitats.
+          Ice is mined for water. ISRU is Sabatier: Mars CO<sub>2</sub> + water
+          ice → CH<sub>4</sub> and O<sub>2</sub>. A city comes later, not now.
+        </p>
+        <div class="cta-row">
+          <a class="btn primary" href="./preview.html">Live preview</a>
+          <a class="btn" href="./walk.html">Walk the outpost</a>
+        </div>
+      </section>
+      <section class="block">
+        <h2>Outpost snapshot</h2>
+        <p class="note">
+          What is on the ground today. The world updates over time — this list
+          is a briefing, not a scoreboard.
+        </p>
+        <ul class="snapshot">
+          <li>
+            <strong>Six Starships</strong>
+            across two synodic windows. The pad ship is fitted as the first
+            crew hab. Five cargo landings; three are unloading.
+          </li>
+          <li>
+            <strong>Next-window pad</strong>
+            graded and marked, still empty — waiting on the next 26-month
+            window.
+          </li>
+          <li>
+            <strong>Power</strong>
+            from four solar fields east of the pad, with battery yards so the
+            plant and crew run after dark.
+          </li>
+          <li>
+            <strong>Sabatier ISRU</strong>
+            west of the pad: CO<sub>2</sub> intake, ice/water feed, CH<sub>4</sub>
+            and O<sub>2</sub> tanks, methalox lines to the spaceport stand and
+            a visible return-flight stockpile.
+          </li>
+          <li>
+            <strong>Hab street</strong>
+            HAB 2–6 linked by pressurized corridors. HAB 6 is occupied. Crew
+            ops / medical and a cargo-built commons / mess are tubed into the
+            neighborhood.
+          </li>
+          <li>
+            <strong>Life support</strong>
+            — CO<sub>2</sub> greenhouse, two more grow vaults, a visible water
+            loop from the ice mine, and an ice/cargo haul road.
+          </li>
+          <li>
+            <strong>Survey and comms</strong>
+            on the ice-rich northern plain, plus a large Earth-pointing dish
+            (light-time delay, not real-time).
+          </li>
+        </ul>
+      </section>
+      <section class="block split">
+        <div>
+          <h2>See it. Walk it.</h2>
+          <p>
+            <a href="./preview.html">Live preview</a> is a cinematic spectator
+            of the current world. No controls — the camera tours the pad, habs,
+            ISRU, and the empty next-window deck.
+          </p>
+          <p>
+            <a href="./walk.html">Walk</a> is first-person on the surface.
+            Click to lock the pointer, then WASD, mouse look, Shift to run,
+            Space to jump. Spawn is on the landing-pad berm, looking at the
+            Starships.
+          </p>
+        </div>
+        <div>
+          <h2>A world that changes</h2>
+          <p>
+            This is not a frozen screenshot. Structures, colliders, and
+            landmarks land through ordinary git history. If you want a new hab,
+            a less-janky Starship, or a better rover, open a PR. People walking
+            tomorrow will see it.
+          </p>
+          <p>
+            Stay on the plan: cargo first, solar, ice, Sabatier, landing-surface
+            prep, then habs. No backends, accounts, or analytics.
+          </p>
+        </div>
+      </section>
+      <section class="block">
+        <h2>Clone and contribute</h2>
+        <p>
+          Source:
+          <a href="https://github.com/grokloop/mars-colony">github.com/grokloop/mars-colony</a>
+          · MIT · Vite + vanilla JS + Three.js · no extra runtime.
+        </p>
+        <pre class="clone"><code>git clone https://github.com/grokloop/mars-colony.git
+cd mars-colony
+npm install
+npm run dev</code></pre>
+        <p class="note">
+          Dev server: home at <code>/</code>, walk at <code>/walk.html</code>,
+          preview at <code>/preview.html</code>. See README and CONTRIBUTING.md.
+        </p>
+      </section>
+    </main>
+    <footer class="site-foot">
+      <p>Mars Colony · Base Alpha · open world, open source · MIT</p>
+      <p>
+        <a href="./preview.html">Preview</a>
+        · <a href="./walk.html">Walk</a>
+        · <a href="https://github.com/grokloop/mars-colony">GitHub</a>
+      </p>
+    </footer>
   </body>
 </html>

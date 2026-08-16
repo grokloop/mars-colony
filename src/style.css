@@ -105,3 +105,261 @@ body.playing #hint { opacity: 0; transition: opacity 1.2s ease; }
 
 .hidden { display: none; }
 body.playing #place { display: block; }
+
+.world-nav {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  gap: 16px;
+  pointer-events: auto;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.world-nav a {
+  color: #f0c089;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.world-nav a:hover {
+  border-bottom-color: rgba(240, 192, 137, 0.7);
+}
+
+html:has(body.site),
+body.site {
+  overflow: auto;
+  height: auto;
+  min-height: 100%;
+}
+
+body.site {
+  overflow-x: hidden;
+}
+
+.site-sky {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% 100%, #3a1c10 0%, transparent 55%),
+    radial-gradient(ellipse 70% 40% at 80% 10%, #2a140e 0%, transparent 50%),
+    linear-gradient(180deg, #1a0e0a 0%, #140c08 42%, #1c100c 100%);
+  pointer-events: none;
+}
+
+.site-bar,
+.hero,
+.block,
+.site-foot {
+  position: relative;
+  z-index: 1;
+}
+
+.site-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 28px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(18, 10, 8, 0.45);
+  backdrop-filter: blur(10px);
+}
+
+.site-mark {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: #f0c089;
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.site-nav a {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+.site-nav a:hover,
+.site-foot a:hover,
+.block a:hover {
+  color: #f0c089;
+}
+
+body.site main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 28px 72px;
+}
+
+.hero {
+  padding: 72px 0 28px;
+}
+
+.kicker {
+  margin: 0 0 14px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: #f0c089;
+}
+
+body.site h1 {
+  margin: 0 0 20px;
+  font-size: clamp(32px, 6vw, 52px);
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+body.site h2 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f0c089;
+  font-weight: 600;
+}
+
+.lede,
+.block p,
+.site-foot p {
+  margin: 0 0 14px;
+  line-height: 1.6;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.note {
+  color: var(--muted) !important;
+  font-size: 14px !important;
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 11px 16px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.btn.primary {
+  background: rgba(240, 192, 137, 0.14);
+  color: #f0c089;
+  border-color: rgba(240, 192, 137, 0.45);
+}
+
+.btn:hover {
+  border-color: #f0c089;
+  color: #f0c089;
+}
+
+.block {
+  margin-top: 48px;
+  padding: 22px 22px 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+}
+
+.block.split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+@media (min-width: 760px) {
+  .block.split {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.block a {
+  color: #f0c089;
+}
+
+.snapshot {
+  margin: 8px 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.snapshot li {
+  margin: 0;
+  padding: 12px 0;
+  border-top: 1px solid rgba(232, 176, 120, 0.16);
+  line-height: 1.55;
+  font-size: 15px;
+}
+
+.snapshot li:last-child {
+  padding-bottom: 16px;
+}
+
+.snapshot strong {
+  color: #f0c089;
+  font-weight: 600;
+}
+
+pre.clone {
+  margin: 16px 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  background: rgba(8, 4, 3, 0.55);
+  border: 1px solid rgba(232, 176, 120, 0.22);
+  color: #f3e2cc;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.site-foot {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 8px 28px 48px;
+  color: var(--muted);
+}
+
+.site-foot p {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.site-foot a {
+  color: #f0c089;
+  text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  .site-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 20px;
+  }
+  body.site main {
+    padding: 0 20px 56px;
+  }
+  .hero {
+    padding-top: 40px;
+  }
+}

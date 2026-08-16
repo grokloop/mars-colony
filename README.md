@@ -6,19 +6,39 @@ This follows the Elon Musk / SpaceX civilize-Mars plan only: Starship is the tru
 
 Day one is an early cargo-then-crew outpost on an ice-rich northern plain (Arcadia Planitia). Starships are the early habs and cargo. This is a living world. The settlement grows as people send PRs.
 
+Public site: https://grokloop.github.io/mars-colony/
+Source: https://github.com/grokloop/mars-colony
+
 ## How to start
 
-Clone this repo, install dependencies, then start the Vite dev server.
+Clone the repo, install dependencies, then start the Vite dev server.
 
-Package scripts: dev -> vite, build -> vite build, preview -> vite preview.
-Install with the node package manager, then run the dev script.
+```
+git clone https://github.com/grokloop/mars-colony.git
+cd mars-colony
+npm install
+npm run dev
+```
 
 Open http://localhost:5173 after the dev server starts.
 
-- Walk: /  (click, WASD, mouse look, Shift run, Space jump)
+- Home: /  (public landing)
+- Walk: /walk.html  (click, WASD, mouse look, Shift run, Space jump)
 - Spectator: /preview.html  (cinematic camera, no controls)
 
+Package scripts: dev -> vite, build -> vite build, preview -> vite preview.
+
 No backend. No accounts. No analytics.
+
+## Deploy
+
+Default Vite `base` is `/`, so a static host at the domain root works.
+
+- Vercel: import the GitHub repo. The included `vercel.json` points the platform at a static `dist` output. One-click.
+- Railway: after a production build, serve the `dist` folder as static files.
+- GitHub Pages: published from `gh-pages` at https://grokloop.github.io/mars-colony/ . When rebuilding for Pages, pass Vite `--base /mars-colony/` so asset URLs stay under that path. Internal links are relative (`./preview.html`, `./walk.html`, `./`) so the same HTML works on Pages and at `/`.
+
+Pages rebuild: npm run build -- --base /mars-colony/
 
 ## Controls
 
@@ -37,7 +57,7 @@ Spawn is on the landing pad berm, looking at the Starships.
 - Pad Starship fitted as the first crew hab: side airlock, access stairs, ground vestibule, CREW HAB / AIRLOCK labels, occupied deck lights
 - Cargo Starships on prepared pads and near landing-prep, hatches/ramps and crates being offloaded
 - Prepared landing surfaces: graded pads, blast berms, approach markers, a pad still being prepped, and an empty second pad marked for the next 26-month window (no ship on it yet)
-- Solar farm east of the pad (expanded rows plus second and third fields), with power lines to the Sabatier plant and extra battery yards for night
+- Solar farm east of the pad (expanded rows plus second, third, and fourth fields), with power lines to the Sabatier plant and extra battery yards for night
 - Sabatier ISRU west: CO2 intake, ice/water feed, CH4 and O2 tanks
 - Hab cluster, pressure habs, and hab street (HAB 2–6) linked by pressurized corridors, with a crew-access tube toward the pad Starship. HAB 6 is occupied off the yard. Crew ops / medical and a cargo-assembled commons / mess are tubed into the neighborhood. Early settlement, not a city.
 - CO2 greenhouse / life support: Mars atmosphere intake and compressor, plant rows in compressed CO2, small O2 tank, plus a second food grow vault
@@ -56,7 +76,7 @@ Spawn is on the landing pad berm, looking at the Starships.
 
 ## Stack
 
-Vite + vanilla JavaScript + Three.js. No extra runtime dependencies.
+Vite + vanilla JavaScript + Three.js. No extra runtime dependencies. Multi-page: `index.html` (home), `preview.html`, `walk.html`.
 
 ## Contribute
 
