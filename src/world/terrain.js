@@ -65,6 +65,7 @@ const FLATS = [
   [-78, -172, 12, 20],
   [66, -74, 14, 22],
   [18, -152, 12, 18],
+  [-20, -100, 10, 16],
 ];
 
 export function getHeight(x, z) {
@@ -257,6 +258,7 @@ export function createRocks() {
       if (Math.hypot(x + 78, z + 172) < 16) continue;
       if (Math.hypot(x - 66, z + 74) < 16) continue;
       if (Math.hypot(x - 18, z + 152) < 14) continue;
+      if (Math.hypot(x + 20, z + 100) < 14) continue;
       const y = getHeight(x, z);
       const s = 0.35 + hashJitter(placed, k, 3) * (k === 2 ? 2.8 : 1.4);
       dummy.position.set(x, y + s * 0.25, z);

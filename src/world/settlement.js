@@ -203,6 +203,13 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 18, z: -152, w: 14, d: 10 });
   landmarks.push({ id: "potable", name: "Potable water store", position: new THREE.Vector3(18, 4, -152) });
 
+  const berms = createHabBerms();
+  root.add(berms);
+  colliders.push({ type: "box", x: -58, z: -108, w: 10, d: 3 });
+  colliders.push({ type: "box", x: -20, z: -100, w: 18, d: 3 });
+  colliders.push({ type: "box", x: 22, z: -128, w: 3, d: 12 });
+  landmarks.push({ id: "berms", name: "Hab dust berms", position: new THREE.Vector3(-20, 4, -100) });
+
   const batt = createBatteries();
   root.add(batt);
   colliders.push({ type: "box", x: 68, z: -10, w: 16, d: 8 });
@@ -2048,5 +2055,31 @@ function createPotableFarm() {
   g.add(labelPlane("POTABLE", "#1a2830", "#d6e6ef", 3.4, 0.7, x, y + 3.35, z + 4.6));
   g.add(labelPlane("HAB STORE", "#1a2830", "#d6b48a", 3.2, 0.5, x, y + 2.7, z + 4.6));
   addPipeRun(g, [[18, -148], [8, -142], [-6, -120], [-18, -88]], mats.pipe, 0.12);
+  return g;
+}
+
+function createHabBerms() {
+  const g = new THREE.Group();
+  g.name = "hab-berms";
+  const spots = [
+    [-58, -108, 9.5, 0.2],
+    [-20, -100, 12.5, 0],
+    [22, -128, 8.5, 1.2],
+    [-8, -148, 7.5, 0.4],
+  ];
+  for (const [x, z, r, rot] of spots) {
+    const y = getHeight(x, z);
+    const berm = mesh(new THREE.TorusGeometry(r, 1.55, 8, 24, Math.PI * 1.15), mats.rust, x, y - 0.2, z, Math.PI / 2, rot, 0);
+    berm.scale.set(1, 0.42, 1);
+    g.add(berm);
+  }
+  for (const [x, z] of [[-62, -102], [-14, -96], [26, -122]]) {
+    const pile = mesh(new THREE.DodecahedronGeometry(2.4, 0), mats.rust, x, getHeight(x, z) + 0.95, z);
+    pile.scale.set(1.25, 0.6, 1.05);
+    g.add(pile);
+  }
+  const [lx, ly, lz] = sit(-20, -100, 2.4);
+  g.add(labelPlane("DUST BERM", "#1a100c", "#f0c089", 3.6, 0.65, lx, ly + 1.1, lz));
+  g.add(labelPlane("HAB WIND", "#1a100c", "#d6b48a", 3.2, 0.48, lx, ly + 0.5, lz));
   return g;
 }
