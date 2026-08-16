@@ -32,6 +32,9 @@ const FLATS = [
   [112, -83, 18, 30],
   [-32, -98, 16, 26],
   [-88, -188, 24, 42],
+  [-68, -16, 16, 28],
+  [22, -112, 12, 20],
+  [-6, -108, 18, 32],
 ];
 
 export function getHeight(x, z) {
@@ -64,16 +67,20 @@ function terrainColor(x, z, y, slope) {
 
 export function roadFactor(x, z) {
   const paths = [
-    { ax: 0, az: 8, bx: 0, bz: -118 },
-    { ax: 0, az: -40, bx: 78, bz: -40 },
-    { ax: 0, az: -40, bx: -72, bz: -18 },
+    { ax: 0, az: 18, bx: 0, bz: -124 },
+    { ax: 0, az: -40, bx: 84, bz: -42 },
+    { ax: 0, az: -40, bx: -68, bz: -16 },
     { ax: 0, az: -90, bx: -55, bz: -150 },
     { ax: 18, az: -70, bx: 52, bz: -88 },
-    { ax: 12, az: 8, bx: 48, bz: 22 },
+    { ax: 12, az: 8, bx: 50, bz: 22 },
     { ax: 16, az: 28, bx: 22, bz: 78 },
-    { ax: -58, az: -158, bx: -88, bz: -188 },
+    { ax: -58, az: -158, bx: -90, bz: -190 },
     { ax: -14, az: -104, bx: -32, bz: -98 },
-    { ax: 90, az: -48, bx: 112, bz: -83 },
+    { ax: 84, az: -42, bx: 112, bz: -83 },
+    { ax: 0, az: -108, bx: 22, bz: -112 },
+    { ax: 22, az: -112, bx: 48, bz: -86 },
+    { ax: -6, az: -116, bx: -18, bz: -138 },
+    { ax: 0, az: 8, bx: -15, bz: -8 },
   ];
   let best = 0;
   for (const p of paths) {
@@ -155,6 +162,8 @@ export function createRocks() {
       if (Math.hypot(x - 112, z + 83) < 22) continue;
       if (Math.hypot(x + 32, z + 98) < 20) continue;
       if (Math.hypot(x + 88, z + 188) < 30) continue;
+      if (Math.hypot(x - 22, z + 112) < 16) continue;
+      if (Math.hypot(x + 68, z + 16) < 22) continue;
       const y = getHeight(x, z);
       const s = 0.35 + hashJitter(placed, k, 3) * (k === 2 ? 2.8 : 1.4);
       dummy.position.set(x, y + s * 0.25, z);

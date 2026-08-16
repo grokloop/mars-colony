@@ -31,6 +31,9 @@ export const mats = {
   flagIce: new THREE.MeshStandardMaterial({ color: 0xc5d8e4, roughness: 0.72, metalness: 0.04 }),
   flagDeposit: new THREE.MeshStandardMaterial({ color: 0xb85a28, roughness: 0.8, metalness: 0.06 }),
   track: new THREE.MeshStandardMaterial({ color: 0x3d2418, roughness: 0.97 }),
+  roadBed: new THREE.MeshStandardMaterial({ color: 0x5c3a2a, roughness: 0.97, metalness: 0.02 }),
+  soil: new THREE.MeshStandardMaterial({ color: 0x4a2e1c, roughness: 0.96 }),
+  plantLeaf: new THREE.MeshStandardMaterial({ color: 0x2f6a32, roughness: 0.88 }),
 };
 
 export function makeLabelTexture(text, bg = "#1c120c", fg = "#f3e2cc") {

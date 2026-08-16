@@ -92,7 +92,15 @@ export function createSettlement() {
   const gh = createGreenhouse();
   root.add(gh);
   colliders.push({ type: "box", x: 22, z: -112, w: 16, d: 10 });
-  landmarks.push({ id: "greenhouse", name: "Greenhouse", position: new THREE.Vector3(22, 4, -112) });
+  colliders.push({ type: "box", x: 32, z: -112, w: 8, d: 6 });
+  landmarks.push({ id: "greenhouse", name: "CO2 life support", position: new THREE.Vector3(22, 4, -112) });
+
+  const methalox = createMethaloxStand();
+  root.add(methalox);
+  colliders.push({ type: "box", x: -15, z: -8, w: 10, d: 7 });
+  landmarks.push({ id: "spaceport", name: "Methalox spaceport", position: new THREE.Vector3(-15, 4, -8) });
+  root.add(createMethaloxLines());
+  root.add(createSpaceportSign());
 
   root.add(createRover(16, 14, -0.4));
   root.add(createRover(8, -62, 1.2));
@@ -475,19 +483,42 @@ function createGreenhouse() {
   const x = 22;
   const z = -112;
   const y = getHeight(x, z);
-  g.add(mesh(new THREE.BoxGeometry(14, 0.25, 8), mats.concrete, x, y + 0.1, z));
-  const vault = new THREE.Mesh(new THREE.CylinderGeometry(4, 4, 13.5, 18, 1, false, 0, Math.PI), mats.glass);
+  g.add(mesh(new THREE.BoxGeometry(15.2, 0.25, 8.6), mats.concrete, x, y + 0.1, z));
+  const vault = new THREE.Mesh(new THREE.CylinderGeometry(4.15, 4.15, 14.2, 18, 1, false, 0, Math.PI), mats.glass);
   vault.rotation.z = Math.PI / 2;
-  vault.position.set(x, y + 4, z);
+  vault.position.set(x, y + 4.1, z);
   vault.castShadow = false;
   g.add(vault);
-  g.add(mesh(new THREE.BoxGeometry(13.6, 0.12, 8.2), mats.solarFrame, x, y + 4.05, z));
+  g.add(mesh(new THREE.BoxGeometry(14.2, 0.1, 8.4), mats.solarFrame, x, y + 4.15, z));
   for (let i = -2; i <= 2; i++) {
-    for (let j = -1; j <= 1; j++) {
-      g.add(mesh(new THREE.BoxGeometry(1.4, 0.55, 0.7), mats.plant, x + i * 2.2, y + 0.55, z + j * 1.8));
-    }
+    g.add(mesh(new THREE.TorusGeometry(4.12, 0.055, 6, 16, Math.PI), mats.solarFrame, x + i * 2.7, y + 4.1, z, 0, Math.PI / 2, 0));
   }
-  g.add(mesh(new THREE.BoxGeometry(1.2, 2, 0.15), mats.habDark, x - 6.8, y + 1.2, z));
+  for (let i = -2; i <= 2; i++) {
+    g.add(mesh(new THREE.BoxGeometry(2.05, 0.26, 6.6), mats.soil, x + i * 2.35, y + 0.36, z));
+    for (let j = -2; j <= 2; j++) {
+      const leaf = j % 2 === 0 ? mats.plant : mats.plantLeaf;
+      g.add(mesh(new THREE.BoxGeometry(1.45, 0.52, 0.82), leaf, x + i * 2.35, y + 0.72, z + j * 1.12));
+      g.add(mesh(new THREE.BoxGeometry(0.55, 0.42, 0.4), mats.plantLeaf, x + i * 2.35 + 0.2, y + 1.05, z + j * 1.12));
+    }
+    g.add(mesh(new THREE.BoxGeometry(1.7, 0.05, 6.1), mats.glowWarm, x + i * 2.35, y + 3.55, z));
+  }
+  g.add(mesh(new THREE.BoxGeometry(1.2, 2, 0.15), mats.habDark, x - 7.1, y + 1.2, z));
+
+  const cx = x + 10.4;
+  const cz = z;
+  const cy = getHeight(cx, cz);
+  g.add(mesh(new THREE.BoxGeometry(5.4, 0.2, 4.6), mats.concrete, cx, cy + 0.08, cz));
+  g.add(mesh(new THREE.CylinderGeometry(0.52, 0.52, 5.4, 10), mats.steel, cx + 1.15, cy + 2.9, cz - 1.05));
+  g.add(mesh(new THREE.CylinderGeometry(1.75, 0.55, 1.7, 14), mats.steelDark, cx + 1.15, cy + 6.2, cz - 1.05));
+  g.add(mesh(new THREE.TorusGeometry(1.5, 0.08, 6, 14), mats.steel, cx + 1.15, cy + 7.1, cz - 1.05, Math.PI / 2, 0, 0));
+  g.add(labelPlane("CO2", "#1a100c", "#f0c089", 1.9, 0.5, cx + 1.15, cy + 3.7, cz + 0.35));
+  g.add(mesh(new THREE.BoxGeometry(2.5, 1.85, 1.9), mats.habDark, cx - 0.7, cy + 1.08, cz + 0.95));
+  g.add(labelPlane("COMPRESS", "#1a100c", "#f0c089", 2.35, 0.55, cx - 0.7, cy + 1.55, cz + 1.95));
+  g.add(mesh(new THREE.CylinderGeometry(0.14, 0.14, 6.4, 8), mats.pipe, x + 6.6, y + 1.55, z, 0, 0, Math.PI / 2));
+  g.add(mesh(new THREE.CylinderGeometry(0.68, 0.68, 2.35, 12), mats.tankO2, x - 5.5, y + 1.45, z + 5.15));
+  g.add(labelPlane("O2", "#2a3340", "#e8eef4", 1.35, 0.42, x - 5.5, y + 1.65, z + 5.95));
+  g.add(labelPlane("LIFE SUPPORT", "#1a100c", "#f0c089", 3.7, 0.7, x, y + 5.55, z + 0.15));
+  g.add(labelPlane("COMPRESSED CO2", "#1a100c", "#d6b48a", 3.5, 0.55, x, y + 4.75, z + 0.15));
   return g;
 }
 
@@ -756,36 +787,132 @@ function createSurvey() {
   return g;
 }
 
+function addPipeRun(g, xz, mat, radius = 0.14) {
+  const pts = [];
+  for (let i = 0; i < xz.length; i++) {
+    const [x, z] = xz[i];
+    const y = getHeight(x, z) + 1.05;
+    pts.push(new THREE.Vector3(x, y, z));
+    if (i % 2 === 0) {
+      g.add(mesh(new THREE.BoxGeometry(0.18, 1.05, 0.18), mats.steelDark, x, getHeight(x, z) + 0.5, z));
+    }
+  }
+  const curve = new THREE.CatmullRomCurve3(pts);
+  const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 28, radius, 6, false), mat);
+  tube.castShadow = false;
+  g.add(tube);
+}
+
+function createMethaloxLines() {
+  const g = new THREE.Group();
+  g.name = "methalox-lines";
+  addPipeRun(g, [[-76, -10.6], [-52, -18], [-32, -14], [-18, -8.4]], mats.tankCh4, 0.13);
+  addPipeRun(g, [[-76, -21.2], [-52, -24], [-32, -18], [-18, -9.6]], mats.steel, 0.13);
+  g.add(labelPlane("TO PAD", "#1a100c", "#f0c089", 2.2, 0.5, -50, getHeight(-50, -18) + 2.15, -16.4));
+  return g;
+}
+
+function createMethaloxStand() {
+  const g = new THREE.Group();
+  g.name = "methalox-stand";
+  const x = -15;
+  const z = -8;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(8.6, 0.16, 5.4), mats.steelDark, x, y + 0.42, z));
+  g.add(mesh(new THREE.CylinderGeometry(0.88, 0.88, 3.5, 14), mats.tankCh4, x - 2.25, y + 2.2, z + 0.55));
+  g.add(mesh(new THREE.CylinderGeometry(0.88, 0.88, 3.5, 14), mats.tankO2, x - 2.25, y + 2.2, z - 1.25));
+  g.add(labelPlane("CH4", "#6a2208", "#f4e6c8", 1.45, 0.42, x - 1.3, y + 2.25, z + 0.55, Math.PI / 2));
+  g.add(labelPlane("O2", "#2a3340", "#e8eef4", 1.45, 0.42, x - 1.3, y + 2.25, z - 1.25, Math.PI / 2));
+  const posts = [[1.55, 1.65], [1.55, -1.65], [3.45, 1.65], [3.45, -1.65]];
+  for (const [px, pz] of posts) {
+    g.add(mesh(new THREE.BoxGeometry(0.16, 3.15, 0.16), mats.steelDark, x + px, y + 1.88, z + pz));
+  }
+  g.add(mesh(new THREE.BoxGeometry(2.25, 0.12, 3.5), mats.steel, x + 2.5, y + 3.5, z));
+  g.add(mesh(new THREE.TorusGeometry(0.42, 0.11, 8, 14), mats.tankCh4, x + 0.15, y + 1.45, z + 0.55, Math.PI / 2, 0, 0));
+  g.add(mesh(new THREE.TorusGeometry(0.42, 0.11, 8, 14), mats.steel, x + 0.15, y + 1.45, z - 1.2, Math.PI / 2, 0, 0));
+  g.add(mesh(new THREE.CylinderGeometry(0.09, 0.09, 6.4, 8), mats.tankCh4, x + 4.55, y + 1.18, z + 0.55, 0, 0, Math.PI / 2));
+  g.add(mesh(new THREE.CylinderGeometry(0.09, 0.09, 6.4, 8), mats.steel, x + 4.55, y + 0.98, z - 1.2, 0, 0, Math.PI / 2));
+  g.add(mesh(new THREE.BoxGeometry(1.55, 1.05, 1.15), mats.habDark, x + 0.55, y + 0.98, z + 1.85));
+  g.add(mesh(new THREE.CylinderGeometry(0.55, 0.55, 2.8, 12), mats.tankCh4, x - 0.4, y + 1.15, z + 2.55, 0, 0, Math.PI / 2));
+  g.add(mesh(new THREE.BoxGeometry(1.6, 0.35, 0.85), mats.steelDark, x - 0.4, y + 0.55, z + 2.55));
+  g.add(labelPlane("METHALOX", "#1a100c", "#f0c089", 3.15, 0.68, x + 2.5, y + 4.12, z));
+  g.add(labelPlane("RETURN PROPELLANT", "#1a100c", "#f0c089", 3.85, 0.58, x + 2.5, y + 3.42, z + 0.02));
+  return g;
+}
+
+function createSpaceportSign() {
+  const g = new THREE.Group();
+  g.name = "spaceport-sign";
+  const x = 17;
+  const z = -17;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(0.12, 3.5, 0.12), mats.steelDark, x, y + 1.75, z));
+  g.add(labelPlane("SPACEPORT", "#1a100c", "#f0c089", 3.5, 0.85, x, y + 3.45, z, 0.55));
+  g.add(labelPlane("METHALOX PAD", "#1a100c", "#d6b48a", 3.2, 0.58, x, y + 2.55, z, 0.55));
+  return g;
+}
+
+function addRoadSeg(g, ax, az, bx, bz, w) {
+  const dx = bx - ax;
+  const dz = bz - az;
+  const len = Math.hypot(dx, dz);
+  const steps = Math.ceil(len / 6);
+  const ang = Math.atan2(dx, dz);
+  for (let i = 0; i < steps; i++) {
+    const t = (i + 0.5) / steps;
+    const x = ax + dx * t;
+    const z = az + dz * t;
+    const y = getHeight(x, z);
+    const sl = len / steps + 0.35;
+    const bed = mesh(new THREE.BoxGeometry(w + 1.7, 0.055, sl + 0.25), mats.roadBed, x, y + 0.03, z, 0, ang, 0);
+    bed.castShadow = false;
+    g.add(bed);
+    const plank = mesh(new THREE.BoxGeometry(w, 0.08, sl + 0.15), mats.padRing, x, y + 0.07, z, 0, ang, 0);
+    plank.castShadow = false;
+    g.add(plank);
+  }
+}
+
+function addJunction(g, x, z, r = 4.2) {
+  const y = getHeight(x, z);
+  const bed = mesh(new THREE.CylinderGeometry(r + 0.8, r + 0.8, 0.06, 20), mats.roadBed, x, y + 0.03, z);
+  bed.castShadow = false;
+  g.add(bed);
+  const deck = mesh(new THREE.CylinderGeometry(r, r, 0.08, 20), mats.graded, x, y + 0.07, z);
+  deck.castShadow = false;
+  g.add(deck);
+}
+
 function createRoads() {
   const g = new THREE.Group();
   g.name = "roads";
   const segs = [
-    [0, 10, 0, -120, 5],
-    [0, -40, 80, -40, 4.5],
-    [0, -40, -70, -16, 4.5],
+    [0, 18, 0, -124, 5.2],
+    [0, -40, 84, -42, 4.6],
+    [0, -40, -68, -16, 4.6],
     [0, -92, -56, -154, 4],
     [16, -72, 48, -86, 3.6],
-    [12, 8, 48, 22, 4],
+    [12, 8, 50, 22, 4.2],
     [16, 28, 22, 78, 3.5],
-    [-58, -158, -88, -188, 3.4],
+    [-58, -158, -90, -190, 3.6],
     [-14, -104, -32, -98, 3.4],
-    [90, -48, 112, -83, 3.6],
+    [84, -42, 112, -83, 3.6],
+    [0, -108, 22, -112, 3.6],
+    [22, -112, 48, -86, 3.4],
+    [-6, -116, -18, -138, 3.2],
+    [0, 8, -15, -8, 3.4],
   ];
-  for (const [ax, az, bx, bz, w] of segs) {
-    const dx = bx - ax;
-    const dz = bz - az;
-    const len = Math.hypot(dx, dz);
-    const steps = Math.ceil(len / 6);
-    for (let i = 0; i < steps; i++) {
-      const t = (i + 0.5) / steps;
-      const x = ax + dx * t;
-      const z = az + dz * t;
-      const y = getHeight(x, z);
-      const plank = mesh(new THREE.BoxGeometry(w, 0.08, len / steps + 0.3), mats.padRing, x, y + 0.06, z, 0, Math.atan2(dx, dz), 0);
-      plank.castShadow = false;
-      g.add(plank);
-    }
+  for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6]]) {
+    addJunction(g, jx, jz, jr);
   }
+  const stakes = [
+    [3.2, -20], [-3.2, -20], [3.2, -60], [-3.2, -60], [3.2, -90],
+    [22, -40], [42, -40], [64, -41], [-22, -32], [-44, -24],
+    [8, -110], [16, -111], [-8, -130], [-28, -148], [-70, -172],
+    [96, -58], [104, -72],
+  ];
+  for (const [sx, sz] of stakes) addStake(g, sx, sz, mats.flagDeposit);
   return g;
 }
 
@@ -795,6 +922,7 @@ function createLights() {
     [18, -8], [-16, -6], [12, -48], [-10, -70], [6, -100], [30, -100], [-30, -20], [40, -40],
     [40, 18], [58, 32], [16, 70], [28, 88], [-54, -8],
     [-80, -176], [-96, -196], [-28, -90], [112, -80], [100, -50],
+    [0, -40], [22, -112], [32, -112], [70, -40], [84, -44],
   ];
   for (const [x, z] of poles) {
     const y = getHeight(x, z);
