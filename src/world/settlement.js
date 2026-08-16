@@ -147,15 +147,16 @@ export function createSettlement() {
 
   const yard = createConstructionYard();
   root.add(yard);
-  colliders.push({ type: "box", x: -36, z: -74, w: 18, d: 14 });
-  colliders.push({ type: "box", x: -40, z: -76, w: 12, d: 8 });
-  addTubeRails(colliders, -36, -87, "z", 22);
+  colliders.push({ type: "box", x: -30, z: -69, w: 9, d: 9 });
+  colliders.push({ type: "box", x: -38, z: -74.2, w: 7, d: 4.4 });
+  addTubeRails(colliders, -36, -87, "z", 24);
+  addTubeRails(colliders, -45, -74, "x", 12);
   landmarks.push({ id: "yard", name: "Construction yard", position: new THREE.Vector3(-36, 5, -74) });
   landmarks.push({ id: "hab6", name: "Hab 6", position: new THREE.Vector3(-40, 5, -76) });
 
   const ops = createCrewOps();
   root.add(ops);
-  colliders.push({ type: "box", x: -50, z: -72, w: 10, d: 10 });
+  colliders.push({ type: "box", x: -53, z: -72, w: 6, d: 7 });
   landmarks.push({ id: "med", name: "Crew ops / medical", position: new THREE.Vector3(-50, 5, -72) });
 
   const commons = createCommons();
