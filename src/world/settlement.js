@@ -86,6 +86,9 @@ export function createSettlement() {
   root.add(createPrepPad());
   landmarks.push({ id: "prep", name: "Landing prep", position: new THREE.Vector3(22, 4, 82) });
 
+  root.add(createNextWindowPad());
+  landmarks.push({ id: "pad2", name: "Next-window pad", position: new THREE.Vector3(-16, 6, 136) });
+
   const solar = createSolarFarm();
   root.add(solar);
   landmarks.push({ id: "solar", name: "Solar farm", position: new THREE.Vector3(82, 6, -44) });
@@ -253,6 +256,7 @@ export function createSettlement() {
   root.add(createOptimus(-34, -92, -1.2));
   root.add(createOptimus(-28, -104, 0.3));
   root.add(createOptimus(16, -120, 0.6));
+  root.add(createOptimus(-28, 128, 1.1));
   root.add(createEvaPresence());
 
   addPropColliders(colliders);
@@ -436,6 +440,7 @@ function createApproachMarkers() {
     { fx: -24, fz: 92, tx: -24, tz: 60, n: 4 },
     { fx: -48, fz: 118, tx: -48, tz: 86, n: 4 },
     { fx: 78, fz: 104, tx: 78, tz: 74, n: 4 },
+    { fx: -16, fz: 178, tx: -16, tz: 154, n: 5 },
   ];
   for (const run of runs) {
     const ang = Math.atan2(run.tx - run.fx, run.tz - run.fz);
@@ -1238,9 +1243,11 @@ function createRoads() {
     [-6, -132, 10, -124, 3.2],
     [10, -124, 8, -142, 3.0],
     [0, 8, 20, 8, 3.4],
+    [22, 82, -16, 136, 3.6],
+    [0, 32, -16, 136, 3.4],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -1599,7 +1606,7 @@ function addPropColliders(colliders) {
   for (const [x, z] of [[16, 14], [8, -62], [30, 74], [-94, -182]]) cyl(x, z, 2.4);
   for (const [x, z] of [[-55, -146], [-61, -118], [-66, -78], [-68, -38], [-70, -62], [-50, -24], [-18, -14], [22, 12]]) cyl(x, z, 3.4);
 
-  for (const [x, z] of [[42, 22], [39, 26], [26, 78], [26, 68], [22, 72], [-80, -174], [-34, -92], [-28, -104], [16, -120]]) cyl(x, z, 0.55);
+  for (const [x, z] of [[42, 22], [39, 26], [26, 78], [26, 68], [22, 72], [-80, -174], [-34, -92], [-28, -104], [16, -120], [-28, 128]]) cyl(x, z, 0.55);
 
   for (const [x, z] of [[2.4, 12.2], [-2.2, 11.5], [3.8, 15.6], [0.6, 18.2]]) cyl(x, z, 0.55);
   box(4.3, 14.8, 1.4, 1.0);
@@ -1640,6 +1647,8 @@ function addPropColliders(colliders) {
   crate(16.6, -128.8, 0.95);
   crate(27.2, 12.4, 0.9);
   crate(12.6, 13.1, 0.95);
+  crate(-32, 124, 0.9);
+  crate(-30.6, 126.4, 0.95);
 }
 
 function createHabStreet() {
@@ -1863,5 +1872,21 @@ function createMethaloxStockpile() {
   addPipeRun(g, [[20, 2], [8, -2], [-8, -6], [-15, -8]], mats.tankCh4, 0.12);
   addCrate(g, 27.2, 12.4, 0.2, 0.9);
   addCrate(g, 12.6, 13.1, -0.25, 0.95);
+  return g;
+}
+
+function createNextWindowPad() {
+  const g = new THREE.Group();
+  g.name = "next-window-pad";
+  const x = -16;
+  const z = 136;
+  g.add(createLandingPad(x, z, { finished: true }));
+  const y = getHeight(x, z);
+  g.add(labelPlane("NEXT WINDOW", "#1a100c", "#f0c089", 4.6, 0.85, x + 22, y + 3.6, z + 4, -0.55));
+  g.add(labelPlane("26 MONTHS", "#1a100c", "#d6b48a", 3.6, 0.55, x + 22, y + 2.75, z + 4, -0.55));
+  g.add(mesh(new THREE.BoxGeometry(0.12, 3.4, 0.12), mats.steelDark, x + 22, y + 1.7, z + 4));
+  g.add(labelPlane("PAD 2", "#1a100c", "#f0c089", 2.4, 0.55, x, y + 0.55, z + 22.4));
+  addCrate(g, -32, 124, 0.2, 0.9);
+  addCrate(g, -30.6, 126.4, -0.25, 0.95);
   return g;
 }
