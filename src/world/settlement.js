@@ -48,6 +48,11 @@ export function createSettlement() {
   landmarks.push({ id: "starship", name: "Crew hab Starship", position: new THREE.Vector3(0, 18, 0) });
   landmarks.push({ id: "eva", name: "EVA / airlock", position: new THREE.Vector3(2, 3, 12) });
 
+  const evaRack = createEvaRack();
+  root.add(evaRack);
+  colliders.push({ type: "box", x: 12, z: 18, w: 6, d: 3 });
+  landmarks.push({ id: "evarack", name: "EVA suit rack", position: new THREE.Vector3(12, 3, 18) });
+
   root.add(createLandingPad(52, 24, { finished: false }));
   const cargo = createStarship(52, 24, { name: "cargo-starship", cargoOpen: true });
   root.add(cargo);
@@ -1377,9 +1382,10 @@ function createRoads() {
     [8, -142, 28, -140, 3.2],
     [18, -152, 28, -140, 3.2],
     [-90, -158, -90, -148, 3.2],
+    [5, 16, 12, 18, 3.0],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4], [-96, 4, 3.4], [142, -62, 3.4], [28, -140, 3.4], [-90, -148, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4], [-96, 4, 3.4], [142, -62, 3.4], [28, -140, 3.4], [-90, -148, 3.4], [12, 18, 3.2]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2427,5 +2433,23 @@ function createCondensate() {
   g.add(labelPlane("CONDENSATE", "#1a2830", "#d6b48a", 3.6, 0.42, x, y + 3.75, z + 3.6));
   addPipeRun(g, [[28, -140], [18, -146], [18, -152]], mats.pipe, 0.1);
   addPipeRun(g, [[28, -140], [16, -142], [8, -142]], mats.pipe, 0.09);
+  return g;
+}
+
+function createEvaRack() {
+  const g = new THREE.Group();
+  g.name = "eva-rack";
+  const x = 12;
+  const z = 18;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(5.8, 0.16, 2.4), mats.steelDark, x, y + 0.08, z));
+  g.add(mesh(new THREE.BoxGeometry(0.16, 2.8, 0.16), mats.steel, x - 2.4, y + 1.5, z - 0.7));
+  g.add(mesh(new THREE.BoxGeometry(0.16, 2.8, 0.16), mats.steel, x + 2.4, y + 1.5, z - 0.7));
+  g.add(mesh(new THREE.BoxGeometry(5.0, 0.12, 0.12), mats.steel, x, y + 2.9, z - 0.7));
+  g.add(createEvaSuit(x - 1.5, z, 0.2));
+  g.add(createEvaSuit(x, z + 0.15, -0.1));
+  g.add(createEvaSuit(x + 1.5, z, 0.15));
+  g.add(labelPlane("SUITS", "#1a100c", "#f0c089", 2.4, 0.45, x, y + 3.35, z + 1.2));
+  g.add(labelPlane("EVA RACK", "#1a100c", "#d6b48a", 2.8, 0.4, x, y + 2.85, z + 1.2));
   return g;
 }
