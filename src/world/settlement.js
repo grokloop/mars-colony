@@ -223,6 +223,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 8, z: -142, w: 14, d: 9 });
   landmarks.push({ id: "food2", name: "Hab-street grow vault", position: new THREE.Vector3(8, 4, -142) });
 
+  const cond = createCondensate();
+  root.add(cond);
+  colliders.push({ type: "box", x: 28, z: -140, w: 10, d: 8 });
+  landmarks.push({ id: "condensate", name: "Condensate return", position: new THREE.Vector3(28, 4, -140) });
+
   const water = createWaterLoop();
   root.add(water);
   colliders.push({ type: "box", x: -60, z: -148, w: 8, d: 6 });
@@ -1367,9 +1372,11 @@ function createRoads() {
     [-22, -88, -8, -88, 3.2],
     [-96, -16, -96, 4, 3.2],
     [158, -62, 142, -62, 3.2],
+    [8, -142, 28, -140, 3.2],
+    [18, -152, 28, -140, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4], [-96, 4, 3.4], [142, -62, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4], [-96, 4, 3.4], [142, -62, 3.4], [28, -140, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2400,5 +2407,22 @@ function createSolarDustFence() {
   }
   g.add(labelPlane("DUST", "#1a100c", "#f0c089", 2.4, 0.45, x - 1.4, y + 3.5, z));
   g.add(labelPlane("FENCE", "#1a100c", "#d6b48a", 2.4, 0.4, x - 1.4, y + 3.0, z));
+  return g;
+}
+
+function createCondensate() {
+  const g = new THREE.Group();
+  g.name = "condensate";
+  const x = 28;
+  const z = -140;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(9.6, 0.2, 7.2), mats.concrete, x, y + 0.1, z));
+  g.add(mesh(new THREE.CylinderGeometry(1.35, 1.35, 3.8, 14), mats.pipe, x - 1.6, y + 2.1, z));
+  g.add(mesh(new THREE.CylinderGeometry(1.35, 1.35, 3.8, 14), mats.pipe, x + 1.8, y + 2.1, z));
+  g.add(mesh(new THREE.BoxGeometry(2.4, 1.6, 1.8), mats.habDark, x, y + 1.0, z + 2.2));
+  g.add(labelPlane("H2O", "#1a2830", "#d6e6ef", 2.2, 0.5, x, y + 4.3, z + 3.6));
+  g.add(labelPlane("CONDENSATE", "#1a2830", "#d6b48a", 3.6, 0.42, x, y + 3.75, z + 3.6));
+  addPipeRun(g, [[28, -140], [18, -146], [18, -152]], mats.pipe, 0.1);
+  addPipeRun(g, [[28, -140], [16, -142], [8, -142]], mats.pipe, 0.09);
   return g;
 }
