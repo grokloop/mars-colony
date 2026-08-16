@@ -265,6 +265,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: -40, z: -154, w: 6, d: 5 });
   landmarks.push({ id: "earth", name: "Earth dish · 12 min delay", position: new THREE.Vector3(-32, 12, -148) });
 
+  const earth2 = createEarthDish2();
+  root.add(earth2);
+  colliders.push({ type: "cyl", x: -8, z: -162, r: 6.2 });
+  landmarks.push({ id: "earth2", name: "Backup Earth dish", position: new THREE.Vector3(-8, 10, -162) });
+
   const mine = createIceMine();
   root.add(mine);
   colliders.push({ type: "cyl", x: -58, z: -158, r: 6 });
@@ -1285,9 +1290,10 @@ function createRoads() {
     [48, -86, 66, -74, 3.4],
     [8, -142, 18, -152, 3.2],
     [-18, -88, 18, -152, 3.2],
+    [-32, -148, -8, -162, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2081,5 +2087,24 @@ function createHabBerms() {
   const [lx, ly, lz] = sit(-20, -100, 2.4);
   g.add(labelPlane("DUST BERM", "#1a100c", "#f0c089", 3.6, 0.65, lx, ly + 1.1, lz));
   g.add(labelPlane("HAB WIND", "#1a100c", "#d6b48a", 3.2, 0.48, lx, ly + 0.5, lz));
+  return g;
+}
+
+function createEarthDish2() {
+  const g = new THREE.Group();
+  g.name = "earth-dish-2";
+  const x = -8;
+  const z = -162;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.CylinderGeometry(6.2, 6.2, 0.26, 28), mats.concrete, x, y + 0.1, z));
+  g.add(mesh(new THREE.CylinderGeometry(1.1, 1.4, 4.2, 12), mats.steelDark, x, y + 2.2, z));
+  const mount = new THREE.Group();
+  mount.position.set(x, y + 6.8, z);
+  mount.rotation.set(-0.88, 0.55, 0);
+  mount.add(mesh(new THREE.SphereGeometry(5.2, 22, 14, 0, Math.PI * 2, 0, Math.PI / 2.28), mats.dish, 0, 0, 0));
+  mount.add(mesh(new THREE.CylinderGeometry(0.06, 0.06, 3.8, 6), mats.steelDark, 0, 1.9, 0));
+  g.add(mount);
+  g.add(labelPlane("EARTH 2", "#1a100c", "#f0c089", 3.2, 0.65, x, y + 3.6, z + 5.2));
+  g.add(labelPlane("BACKUP LINK", "#1a100c", "#d6b48a", 3.4, 0.5, x, y + 2.95, z + 5.2));
   return g;
 }
