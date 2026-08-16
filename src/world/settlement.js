@@ -239,6 +239,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: -28, z: -138, w: 8, d: 6 });
   landmarks.push({ id: "battery2", name: "Crew night store", position: new THREE.Vector3(68, 4, 6) });
 
+  const batt3 = createHabBatteries3();
+  root.add(batt3);
+  colliders.push({ type: "box", x: 8, z: -78, w: 12, d: 7 });
+  landmarks.push({ id: "battery3", name: "Hab night store 3", position: new THREE.Vector3(8, 4, -78) });
+
   const methalox = createMethaloxStand();
   root.add(methalox);
   colliders.push({ type: "box", x: -15, z: -8, w: 10, d: 7 });
@@ -1341,9 +1346,11 @@ function createRoads() {
     [22, -112, 52, -112, 3.2],
     [38, -126, 52, -112, 3.2],
     [-78, -172, -90, -158, 3.2],
+    [8, -98, 8, -78, 3.2],
+    [22, -80, 8, -78, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2306,5 +2313,21 @@ function createIceDepot() {
   g.add(labelPlane("ICE", "#1a2830", "#d6e6ef", 2.2, 0.55, x, y + 3.85, z + 4.4));
   g.add(labelPlane("CRUSH", "#1a2830", "#d6e6ef", 2.6, 0.5, x, y + 3.2, z + 4.4));
   addPipeRun(g, [[-86, -160], [-80, -166], [-74, -168]], mats.pipe, 0.13);
+  return g;
+}
+
+function createHabBatteries3() {
+  const g = new THREE.Group();
+  g.name = "batteries-3";
+  const x = 8;
+  const z = -78;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(11.6, 0.2, 6.4), mats.concrete, x, y + 0.1, z));
+  for (let i = 0; i < 5; i++) {
+    g.add(mesh(new THREE.BoxGeometry(1.7, 1.95, 3.8), mats.battery, x - 4 + i * 2.0, y + 1.15, z));
+    g.add(mesh(new THREE.BoxGeometry(1.55, 0.08, 3.6), mats.steel, x - 4 + i * 2.0, y + 2.18, z));
+  }
+  g.add(labelPlane("NIGHT", "#111111", "#f4e6c8", 2.4, 0.5, x, y + 2.7, z + 3.3));
+  g.add(labelPlane("HAB STORE", "#111111", "#d6b48a", 3.0, 0.42, x, y + 2.15, z + 3.3));
   return g;
 }
