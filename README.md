@@ -37,7 +37,7 @@ Spawn is on the landing pad berm, looking at the Starships.
 - Pad Starship fitted as the first crew hab: side airlock, access stairs, ground vestibule, CREW HAB / AIRLOCK labels, occupied deck lights
 - Cargo Starships on prepared pads and near landing-prep, hatches/ramps and crates being offloaded
 - Prepared landing surfaces: graded pads, blast berms, approach markers, and a third pad still being prepped
-- Solar farm east of the pad (expanded rows plus a second field), with power lines to the Sabatier plant
+- Solar farm east of the pad (expanded rows plus second and third fields), with power lines to the Sabatier plant and extra battery yards for night
 - Sabatier ISRU west: CO2 intake, ice/water feed, CH4 and O2 tanks
 - Hab cluster north along the road, hab modules being assembled from cargo kits, cargo-derived pressure habs, plus a second hab street (HAB 3–5) growing toward permanence
 - CO2 greenhouse / life support: Mars atmosphere intake and compressor, plant rows in compressed CO2, small O2 tank, plus a second food grow vault
@@ -47,7 +47,7 @@ Spawn is on the landing pad berm, looking at the Starships.
 - Comms tower plus a large Earth-pointing dish (DSN / Starship-era link; light-time delay, not real-time)
 - Ice-mining rig with a water-ice pile and a feed line to Sabatier
 - Ice/cargo haul loop: loaded trailers on the road from the mine to a transfer yard, Sabatier ISRU, and the pad
-- Second grow vault for food: more plant rows in compressed CO2, FOOD / GROW FROM CO2
+- Grow vaults for food: the original CO2 greenhouse, a second vault, and a hab-street vault so six ships and HAB 3–5 can eat
 - Visible water loop: ice melt and filter on the mine road, potable tanks at the habs, pipes ice → ISRU and ice → crew
 - Battery / night store by the solar farm and a smaller pack at the habs so the plant and crew run after dark
 - Small EVA/crew presence at the pad airlock: suited figures, tool cart, suitport

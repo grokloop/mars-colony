@@ -94,6 +94,10 @@ export function createSettlement() {
   root.add(solar2);
   landmarks.push({ id: "solar2", name: "Solar field 2", position: new THREE.Vector3(112, 5, -83) });
 
+  const solar3 = createSolarField3();
+  root.add(solar3);
+  landmarks.push({ id: "solar3", name: "Solar field 3", position: new THREE.Vector3(135, 5, -40) });
+
   root.add(createPowerRun());
   root.add(createSolarTie());
 
@@ -141,6 +145,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 38, z: -126, w: 14, d: 9 });
   landmarks.push({ id: "food", name: "Food / grow vault", position: new THREE.Vector3(38, 4, -126) });
 
+  const food2 = createFoodVault3();
+  root.add(food2);
+  colliders.push({ type: "box", x: 8, z: -142, w: 14, d: 9 });
+  landmarks.push({ id: "food2", name: "Hab-street grow vault", position: new THREE.Vector3(8, 4, -142) });
+
   const water = createWaterLoop();
   root.add(water);
   colliders.push({ type: "box", x: -60, z: -148, w: 8, d: 6 });
@@ -153,6 +162,12 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 68, z: -10, w: 16, d: 8 });
   colliders.push({ type: "box", x: -22, z: -88, w: 8, d: 6 });
   landmarks.push({ id: "battery", name: "Night power store", position: new THREE.Vector3(68, 4, -10) });
+
+  const batt2 = createBatteryYard2();
+  root.add(batt2);
+  colliders.push({ type: "box", x: 68, z: 6, w: 16, d: 8 });
+  colliders.push({ type: "box", x: -28, z: -138, w: 8, d: 6 });
+  landmarks.push({ id: "battery2", name: "Crew night store", position: new THREE.Vector3(68, 4, 6) });
 
   const methalox = createMethaloxStand();
   root.add(methalox);
@@ -1177,9 +1192,14 @@ function createRoads() {
     [-64, -118, -18, -88, 3.6],
     [84, -42, 68, -10, 3.4],
     [-6, -108, -18, -88, 3.2],
+    [38, -126, 8, -142, 3.4],
+    [-13, -134, 8, -142, 3.2],
+    [112, -83, 135, -40, 3.6],
+    [68, -10, 68, 6, 3.2],
+    [-13, -134, -28, -138, 3.0],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -1549,6 +1569,8 @@ function addPropColliders(colliders) {
   box(54, -18, 3, 2.2);
   for (let j = 0; j < 4; j++) box(111.5, -74 - j * 6.2, 30, 2.6);
   box(96, -72, 3, 2.2);
+  for (let j = 0; j < 5; j++) box(135.5, -28 - j * 6.2, 30, 2.6);
+  box(120, -26, 3, 2.2);
 
   box(14, 22, 2.4, 1.6);
   box(18, 26, 1.8, 1.3);
@@ -1598,4 +1620,81 @@ function addCrewHabHull(colliders) {
   box(1.28, 13.0, 0.36, 12.4);
   box(-1.45, 19.2, 0.4, 2.8);
   box(1.45, 19.2, 0.4, 2.8);
+}
+
+function createFoodVault3() {
+  const g = new THREE.Group();
+  g.name = "food-3";
+  const x = 8;
+  const z = -142;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(13.2, 0.25, 7.6), mats.concrete, x, y + 0.1, z));
+  const vault = new THREE.Mesh(new THREE.CylinderGeometry(3.55, 3.55, 12.4, 18, 1, false, 0, Math.PI), mats.glass);
+  vault.rotation.z = Math.PI / 2;
+  vault.position.set(x, y + 3.55, z);
+  vault.castShadow = false;
+  g.add(vault);
+  g.add(mesh(new THREE.BoxGeometry(12.2, 0.1, 7.2), mats.solarFrame, x, y + 3.6, z));
+  for (let i = -2; i <= 2; i++) {
+    g.add(mesh(new THREE.BoxGeometry(1.85, 0.24, 5.6), mats.soil, x + i * 2.1, y + 0.34, z));
+    for (let j = -2; j <= 2; j++) {
+      const leaf = j % 2 === 0 ? mats.plant : mats.plantLeaf;
+      g.add(mesh(new THREE.BoxGeometry(1.25, 0.58, 0.72), leaf, x + i * 2.1, y + 0.78, z + j * 0.95));
+    }
+    g.add(mesh(new THREE.BoxGeometry(1.5, 0.05, 5.2), mats.glowWarm, x + i * 2.1, y + 3.15, z));
+  }
+  g.add(mesh(new THREE.BoxGeometry(1.1, 1.8, 0.14), mats.habDark, x - 6.2, y + 1.1, z));
+  g.add(labelPlane("FOOD", "#1a100c", "#f0c089", 2.8, 0.7, x, y + 5.05, z + 0.15));
+  g.add(labelPlane("HAB STREET", "#1a100c", "#d6b48a", 3.4, 0.5, x, y + 4.35, z + 0.15));
+  addCrate(g, 15, -138, 0.2, 0.9);
+  return g;
+}
+
+function createSolarField3() {
+  const g = new THREE.Group();
+  g.name = "solar-3";
+  const cols = 6;
+  const rows = 5;
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      const x = 122 + i * 5.4;
+      const z = -28 - j * 6.2;
+      const y = getHeight(x, z);
+      g.add(mesh(new THREE.BoxGeometry(0.18, 1.6, 0.18), mats.solarFrame, x, y + 0.8, z));
+      g.add(mesh(new THREE.BoxGeometry(4.6, 0.08, 2.3), mats.solar, x, y + 1.55, z, -0.55, 0.15, 0));
+      g.add(mesh(new THREE.BoxGeometry(4.75, 0.05, 2.42), mats.solarFrame, x, y + 1.5, z, -0.55, 0.15, 0));
+    }
+  }
+  const [ix, iy, iz] = sit(120, -26, 0.7);
+  g.add(mesh(new THREE.BoxGeometry(2.2, 1.4, 1.4), mats.habDark, ix, iy, iz));
+  g.add(labelPlane("POWER", "#111111", "#f4e6c8", 2.0, 0.55, ix, iy + 0.2, iz + 0.75));
+  g.add(labelPlane("FIELD 3", "#111111", "#d6b48a", 2.2, 0.45, ix, iy + 0.85, iz + 0.75));
+  return g;
+}
+
+function createBatteryYard2() {
+  const g = new THREE.Group();
+  g.name = "batteries-2";
+  const x = 68;
+  const z = 6;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(15.2, 0.22, 7.2), mats.concrete, x, y + 0.1, z));
+  for (let i = 0; i < 6; i++) {
+    const bx = x - 5.5 + i * 2.2;
+    g.add(mesh(new THREE.BoxGeometry(1.85, 2.15, 4.4), mats.battery, bx, y + 1.25, z));
+    g.add(mesh(new THREE.BoxGeometry(1.7, 0.08, 4.2), mats.steel, bx, y + 2.38, z));
+  }
+  g.add(labelPlane("BATTERY", "#111111", "#f4e6c8", 3.4, 0.7, x, y + 3.15, z + 3.75));
+  g.add(labelPlane("CREW STORE", "#111111", "#d6b48a", 3.5, 0.55, x, y + 2.45, z + 3.75));
+
+  const hx = -28;
+  const hz = -138;
+  const hy = getHeight(hx, hz);
+  g.add(mesh(new THREE.BoxGeometry(7.2, 0.2, 5.2), mats.concrete, hx, hy + 0.1, hz));
+  for (let i = 0; i < 3; i++) {
+    g.add(mesh(new THREE.BoxGeometry(1.7, 1.9, 3.6), mats.battery, hx - 2 + i * 2.0, hy + 1.15, hz));
+  }
+  g.add(labelPlane("NIGHT", "#111111", "#f4e6c8", 2.2, 0.5, hx, hy + 2.55, hz + 2.7));
+  g.add(labelPlane("HAB 3-5", "#111111", "#d6b48a", 2.2, 0.42, hx, hy + 2.05, hz + 2.7));
+  return g;
 }
