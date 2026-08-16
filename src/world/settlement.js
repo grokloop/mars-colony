@@ -310,6 +310,11 @@ export function createSettlement() {
   colliders.push({ type: "cyl", x: -78, z: -172, r: 6 });
   landmarks.push({ id: "ice2", name: "Ice mine 2", position: new THREE.Vector3(-78, 8, -172) });
 
+  const iceDepot = createIceDepot();
+  root.add(iceDepot);
+  colliders.push({ type: "box", x: -90, z: -158, w: 12, d: 10 });
+  landmarks.push({ id: "ice-depot", name: "Ice crush depot", position: new THREE.Vector3(-90, 4, -158) });
+
   const survey = createSurvey();
   root.add(survey);
   colliders.push({ type: "cyl", x: -82, z: -176, r: 2.4 });
@@ -1335,9 +1340,10 @@ function createRoads() {
     [48, -86, 22, -80, 3.2],
     [22, -112, 52, -112, 3.2],
     [38, -126, 52, -112, 3.2],
+    [-78, -172, -90, -158, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2280,5 +2286,25 @@ function createGreenhouse2() {
   g.add(labelPlane("GREENHOUSE 2", "#1a100c", "#f0c089", 4.0, 0.65, x, y + 5.15, z + 0.15));
   g.add(labelPlane("GROW FROM CO2", "#1a100c", "#d6b48a", 3.6, 0.48, x, y + 4.5, z + 0.15));
   addPipeRun(g, [[32, -112], [42, -112], [52, -112]], mats.pipe, 0.1);
+  return g;
+}
+
+function createIceDepot() {
+  const g = new THREE.Group();
+  g.name = "ice-depot";
+  const x = -90;
+  const z = -158;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(12, 0.22, 10), mats.concrete, x, y + 0.1, z));
+  g.add(mesh(new THREE.BoxGeometry(3.6, 2.4, 2.8), mats.steelDark, x - 1.8, y + 1.35, z));
+  g.add(mesh(new THREE.CylinderGeometry(0.85, 1.65, 2.1, 10), mats.steelDark, x - 1.8, y + 3.35, z));
+  g.add(mesh(new THREE.BoxGeometry(2.4, 0.28, 1.05), mats.steel, x + 0.7, y + 2.1, z, 0, 0, -0.2));
+  const pile = mesh(new THREE.DodecahedronGeometry(2.8, 0), mats.ice, x + 3.6, y + 1.25, z + 1.5);
+  pile.scale.set(1.35, 0.7, 1.15);
+  g.add(pile);
+  g.add(mesh(new THREE.DodecahedronGeometry(1.15, 0), mats.ice, x + 4.8, y + 0.85, z + 0.2));
+  g.add(labelPlane("ICE", "#1a2830", "#d6e6ef", 2.2, 0.55, x, y + 3.85, z + 4.4));
+  g.add(labelPlane("CRUSH", "#1a2830", "#d6e6ef", 2.6, 0.5, x, y + 3.2, z + 4.4));
+  addPipeRun(g, [[-86, -160], [-80, -166], [-74, -168]], mats.pipe, 0.13);
   return g;
 }
