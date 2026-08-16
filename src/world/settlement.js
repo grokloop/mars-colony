@@ -261,6 +261,14 @@ export function createSettlement() {
   colliders.push({ type: "box", x: 66, z: -74, w: 16, d: 12 });
   landmarks.push({ id: "workshop2", name: "Workshop bay 2", position: new THREE.Vector3(66, 5, -74) });
 
+  const shelter = createRoverShelter();
+  root.add(shelter);
+  root.add(createRover(48, -70, 0.2));
+  landmarks.push({ id: "shelter", name: "Rover dust shelter", position: new THREE.Vector3(48, 4, -70) });
+  for (const [px, pz] of [[42.8, -73.4], [53.2, -73.4], [42.8, -66.6], [53.2, -66.6]]) {
+    colliders.push({ type: "cyl", x: px, z: pz, r: 0.45 });
+  }
+
   const tower = createCommsTower();
   root.add(tower);
   colliders.push({ type: "cyl", x: -18, z: -138, r: 3 });
@@ -1306,9 +1314,10 @@ function createRoads() {
     [-32, -148, -8, -162, 3.2],
     [-6, -108, 8, -98, 3.2],
     [22, -112, 8, -98, 3.2],
+    [48, -86, 48, -70, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -1664,7 +1673,7 @@ function addPropColliders(colliders) {
   crate(wx2 - 4.2, wz2 + 1.4, 1.12);
   crate(wx2 - 5.4, wz2 - 0.6, 1.05);
 
-  for (const [x, z] of [[16, 14], [8, -62], [30, 74], [-94, -182]]) cyl(x, z, 2.4);
+  for (const [x, z] of [[16, 14], [8, -62], [30, 74], [-94, -182], [48, -70]]) cyl(x, z, 2.4);
   for (const [x, z] of [[-55, -146], [-61, -118], [-66, -78], [-68, -38], [-70, -62], [-50, -24], [-18, -14], [22, 12]]) cyl(x, z, 3.4);
 
   for (const [x, z] of [[42, 22], [39, 26], [26, 78], [26, 68], [22, 72], [-80, -174], [-34, -92], [-28, -104], [16, -120], [-28, 128]]) cyl(x, z, 0.55);
@@ -2165,5 +2174,23 @@ function createEclssSkid() {
   g.add(labelPlane("O2", "#2a3340", "#e8eef4", 1.4, 0.4, x + 2.5, y + 3.05, z + 1.8));
   addPipeRun(g, [[8, -98], [14, -104], [22, -112]], mats.pipe, 0.1);
   addPipeRun(g, [[8, -98], [2, -102], [-6, -108]], mats.tankO2, 0.09);
+  return g;
+}
+
+function createRoverShelter() {
+  const g = new THREE.Group();
+  g.name = "rover-shelter";
+  const x = 48;
+  const z = -70;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(12.4, 0.18, 8.6), mats.concrete, x, y + 0.08, z));
+  const posts = [[-5.2, -3.4], [5.2, -3.4], [-5.2, 3.4], [5.2, 3.4]];
+  for (const [px, pz] of posts) {
+    g.add(mesh(new THREE.BoxGeometry(0.28, 4.6, 0.28), mats.steelDark, x + px, y + 2.4, z + pz));
+  }
+  g.add(mesh(new THREE.BoxGeometry(12.8, 0.16, 9.0), mats.steel, x, y + 4.75, z));
+  g.add(mesh(new THREE.BoxGeometry(12.8, 0.06, 9.0), mats.solar, x, y + 4.88, z));
+  g.add(labelPlane("DUST", "#1a100c", "#f0c089", 2.6, 0.5, x, y + 5.35, z + 4.6));
+  g.add(labelPlane("ROVER", "#1a100c", "#d6b48a", 2.8, 0.42, x, y + 4.8, z + 4.6));
   return g;
 }
