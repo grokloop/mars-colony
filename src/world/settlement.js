@@ -126,6 +126,11 @@ export function createSettlement() {
   colliders.push({ type: "box", x: -96, z: -16, w: 18, d: 18 });
   landmarks.push({ id: "isru2", name: "Sabatier train 2", position: new THREE.Vector3(-96, 8, -16) });
 
+  const co2 = createCo2Capture();
+  root.add(co2);
+  colliders.push({ type: "box", x: -96, z: 4, w: 12, d: 8 });
+  landmarks.push({ id: "co2cap", name: "CO2 intake 2", position: new THREE.Vector3(-96, 5, 4) });
+
   root.add(createWaterFeed());
 
   const habs = createHabs();
@@ -1355,9 +1360,10 @@ function createRoads() {
     [22, -80, 8, -78, 3.2],
     [8, -98, -8, -88, 3.2],
     [-22, -88, -8, -88, 3.2],
+    [-96, -16, -96, 4, 3.2],
   ];
   for (const [ax, az, bx, bz, w] of segs) addRoadSeg(g, ax, az, bx, bz, w);
-  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4]]) {
+  for (const [jx, jz, jr] of [[0, -40, 5.2], [0, -108, 4.4], [84, -42, 4.0], [22, -112, 3.8], [0, 10, 4.6], [-64, -90, 4.2], [36, 72, 3.6], [-46, -100, 3.6], [38, -126, 3.6], [-18, -88, 3.8], [68, -10, 3.8], [-48, 68, 3.6], [78, 56, 3.6], [-13, -134, 3.6], [8, -142, 3.6], [135, -40, 3.6], [68, 6, 3.6], [-36, -74, 3.6], [2, -22, 3.4], [-50, -72, 3.4], [10, -124, 3.6], [20, 8, 3.6], [-16, 136, 4.2], [158, -62, 3.6], [-96, -16, 3.8], [-78, -172, 3.6], [66, -74, 3.6], [18, -152, 3.4], [-8, -162, 3.4], [8, -98, 3.4], [48, -70, 3.4], [-68, 12, 3.4], [22, -80, 3.4], [52, -112, 3.6], [-90, -158, 3.4], [8, -78, 3.4], [-8, -88, 3.4], [-96, 4, 3.4]]) {
     addJunction(g, jx, jz, jr);
   }
   const stakes = [
@@ -2353,5 +2359,22 @@ function createO2Buffer() {
   g.add(labelPlane("O2", "#2a3340", "#e8eef4", 1.8, 0.5, x, y + 4.15, z + 3.7));
   g.add(labelPlane("CREW", "#2a3340", "#d6b48a", 2.2, 0.42, x, y + 3.6, z + 3.7));
   addPipeRun(g, [[-8, -88], [0, -94], [8, -98]], mats.tankO2, 0.1);
+  return g;
+}
+
+function createCo2Capture() {
+  const g = new THREE.Group();
+  g.name = "co2-capture";
+  const x = -96;
+  const z = 4;
+  const y = getHeight(x, z);
+  g.add(mesh(new THREE.BoxGeometry(11.6, 0.2, 7.4), mats.concrete, x, y + 0.1, z));
+  g.add(mesh(new THREE.CylinderGeometry(0.55, 0.55, 6.8, 10), mats.steel, x - 2.4, y + 3.6, z));
+  g.add(mesh(new THREE.CylinderGeometry(2.1, 0.65, 2.4, 14), mats.steelDark, x - 2.4, y + 7.8, z));
+  g.add(mesh(new THREE.TorusGeometry(1.85, 0.1, 6, 16), mats.steel, x - 2.4, y + 9.1, z, Math.PI / 2, 0, 0));
+  g.add(mesh(new THREE.BoxGeometry(3.2, 2.2, 2.4), mats.habDark, x + 2.2, y + 1.3, z));
+  g.add(labelPlane("CO2", "#1a100c", "#f0c089", 2.2, 0.55, x - 2.4, y + 4.8, z + 1.4));
+  g.add(labelPlane("INTAKE 2", "#1a100c", "#d6b48a", 3.0, 0.45, x + 2.2, y + 2.7, z + 1.35));
+  addPipeRun(g, [[-96, 4], [-96, -6], [-96, -16]], mats.pipe, 0.12);
   return g;
 }
